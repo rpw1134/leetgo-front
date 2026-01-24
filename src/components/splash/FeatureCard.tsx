@@ -49,7 +49,7 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
           }
         });
       },
-      { threshold: 0.2 }
+      { threshold: 0.2 },
     );
 
     observer.observe(cardRef.current);
@@ -97,7 +97,7 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
 
       {/* Corner accent */}
       <div
-        className="absolute top-0 right-0 w-20 h-20 opacity-20"
+        className="absolute top-0 right-0 w-20 h-20 opacity-20 rounded-xl"
         style={{
           background: `radial-gradient(circle at 100% 0%, ${accentColor} 0%, transparent 70%)`,
         }}

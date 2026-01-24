@@ -29,12 +29,15 @@ export const SplashNav: React.FC = () => {
       ref={navRef}
       className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-5 opacity-0"
       style={{
-        background: "linear-gradient(180deg, rgba(43, 65, 45, 0.9) 0%, transparent 100%)",
+        background:
+          "linear-gradient(180deg, rgba(43, 65, 45, 0.9) 0%, transparent 100%)",
       }}
     >
       <div className="flex items-center gap-2">
-        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-leetgo-bright to-leetgo-primary flex items-center justify-center">
-          <span className="font-eb-garamond text-xl font-bold text-leetgo-darkest">&lt;/&gt;</span>
+        <div className="w-10 h-10 rounded-lg bg-linear-to-br from-leetgo-bright to-leetgo-primary flex items-center justify-center">
+          <span className="font-eb-garamond text-xl font-bold text-leetgo-darkest">
+            &lt;/&gt;
+          </span>
         </div>
         <span className="font-eb-garamond text-2xl font-semibold tracking-tight text-white">
           Leet<span className="text-leetgo-bright">Go</span>
@@ -42,20 +45,29 @@ export const SplashNav: React.FC = () => {
       </div>
 
       <div className="flex items-center gap-8">
-        <a href="#features" className="nav-link text-white/80 hover:text-leetgo-bright transition-colors duration-300 text-sm tracking-wide opacity-0">
+        {/* <a
+          href="#features"
+          className="nav-link text-white/80 hover:text-leetgo-bright transition-colors duration-300 text-sm tracking-wide opacity-0"
+        >
           Features
         </a>
-        <a href="#about" className="nav-link text-white/80 hover:text-leetgo-bright transition-colors duration-300 text-sm tracking-wide opacity-0">
+        <a
+          href="#about"
+          className="nav-link text-white/80 hover:text-leetgo-bright transition-colors duration-300 text-sm tracking-wide opacity-0"
+        >
           About
         </a>
-        <a href="#community" className="nav-link text-white/80 hover:text-leetgo-bright transition-colors duration-300 text-sm tracking-wide opacity-0">
+        <a
+          href="#community"
+          className="nav-link text-white/80 hover:text-leetgo-bright transition-colors duration-300 text-sm tracking-wide opacity-0"
+        >
           Community
-        </a>
-        <button className="nav-link splash-btn-secondary opacity-0">
+        </a> */}
+        {/* <button className="nav-link splash-btn-secondary opacity-0">
           Sign In
-        </button>
+        </button> */}
         <button className="nav-link splash-btn-primary opacity-0">
-          Get Started
+          Join the Wait List
         </button>
       </div>
     </nav>

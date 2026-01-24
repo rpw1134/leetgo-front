@@ -30,6 +30,13 @@ export const HeroSection: React.FC = () => {
     }
   };
 
+  const scrollToFeatures = () => {
+    const section = document.getElementById("features");
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <section className="relative min-h-screen flex flex-col justify-center overflow-hidden">
       {/* Layered background */}
@@ -49,10 +56,10 @@ export const HeroSection: React.FC = () => {
 
       {/* Floating problem cards - positioned around edges */}
       <div className="absolute inset-0 pointer-events-none hidden lg:block">
-        <div className="absolute top-[15%] left-[5%] w-64 float-animation -rotate-6">
+        <div className="absolute top-[17%] left-[5%] w-64 float-animation -rotate-6">
           <ProblemCard {...sampleProblems[0]} />
         </div>
-        <div className="absolute bottom-[20%] left-[8%] w-56 float-animation-delayed rotate-3">
+        <div className="absolute bottom-[22%] left-[8%] w-56 float-animation-delayed rotate-3">
           <ProblemCard {...sampleProblems[1]} />
         </div>
         <div className="absolute top-[25%] right-[5%] w-64 float-animation rotate-3">
@@ -63,10 +70,10 @@ export const HeroSection: React.FC = () => {
       {/* Main content */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-8">
         {/* Top tagline - left aligned */}
-        <div className="mb-8 md:mb-12">
+        <div className="ml-2 mb-8 md:mb-12">
           <div className="flex flex-wrap gap-x-4 text-white/40 text-sm md:text-base tracking-widest uppercase">
             <span>AI-Powered</span>
-            <span>Algorithm</span>
+            <span>Algorithms</span>
             <span>Practice</span>
           </div>
         </div>
@@ -88,7 +95,7 @@ export const HeroSection: React.FC = () => {
             </div>
             <p className="text-white/50 text-sm md:text-base mt-3 max-w-md ml-auto">
               Stop memorizing solutions. Practice with unique, AI-generated
-              challenges tailored to your skill level.
+              challenges and explore community-made problems.
             </p>
           </div>
         </div>
@@ -101,7 +108,7 @@ export const HeroSection: React.FC = () => {
               onClick={() => navigate("/signup")}
               className="splash-btn-primary px-8 py-4"
             >
-              Start Practicing Free
+              Join the Wait List
             </button>
             <button
               onClick={scrollToHowItWorks}
@@ -123,18 +130,18 @@ export const HeroSection: React.FC = () => {
             </div>
             <div className="text-center md:text-right">
               <div className="font-eb-garamond text-2xl md:text-3xl font-semibold text-white">
-                12k<span className="text-leetgo-bright">+</span>
+                3<span className="text-leetgo-bright"></span>
               </div>
               <div className="text-white/40 text-xs md:text-sm mt-1">
-                Active Users
+                Available Languages
               </div>
             </div>
             <div className="text-center md:text-right">
               <div className="font-eb-garamond text-2xl md:text-3xl font-semibold text-white">
-                4.9<span className="text-leetgo-bright">/5</span>
+                10<span className="text-leetgo-bright">+</span>
               </div>
               <div className="text-white/40 text-xs md:text-sm mt-1">
-                User Rating
+                Problem Types
               </div>
             </div>
           </div>
@@ -142,15 +149,18 @@ export const HeroSection: React.FC = () => {
       </div>
 
       {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
+      <div
+        onClick={scrollToFeatures}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 cursor-pointer transition-opacity hover:opacity-80"
+      >
         <div className="w-6 h-10 rounded-full border-2 border-white/20 flex items-start justify-center p-2">
           <div className="w-1 h-2 rounded-full bg-leetgo-bright animate-bounce" />
         </div>
       </div>
 
       {/* Corner accents */}
-      <div className="absolute top-0 left-0 w-32 h-32 border-l-2 border-t-2 border-leetgo-bright/20 m-8 pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-32 h-32 border-r-2 border-b-2 border-leetgo-bright/20 m-8 pointer-events-none" />
+      <div className="absolute top-0 left-0 w-32 h-32 border-l-2 border-t-2 border-leetgo-bright/20 m-4 pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-32 h-32 border-r-2 border-b-2 border-leetgo-bright/20 m-4 pointer-events-none" />
     </section>
   );
 };

@@ -1,35 +1,39 @@
 import { useEffect, useRef } from "react";
 import { animate, stagger } from "animejs";
 import { FeatureCard } from "./FeatureCard";
+import { InfinityIcon } from "../SVGs/InfinityIcon";
+import { LayersIcon } from "../SVGs/LayersIcon";
+import { GrowthIcon } from "../SVGs/GrowthIcon";
+import { MessageIcon } from "../SVGs/MessageIcon";
 
 const features = [
   {
-    icon: "🧠",
+    icon: <InfinityIcon className="w-8 h-8" />,
     title: "AI-Generated Problems",
     description:
       "Every problem is unique and generated just for you. No memorizing solutions — pure problem-solving practice.",
     accentColor: "#00EB17",
   },
   {
-    icon: "📈",
+    icon: <LayersIcon className="w-8 h-8" />,
     title: "Adaptive Difficulty",
     description:
       "Problems scale with your skill level. Start easy, grow naturally, and challenge yourself when you're ready.",
-    accentColor: "#20C030",
+    accentColor: "#00EB17",
   },
   {
-    icon: "🌱",
+    icon: <GrowthIcon className="w-8 h-8" />,
     title: "Track Your Growth",
     description:
       "Visual progress tracking shows how far you've come. Celebrate milestones and identify areas to improve.",
-    accentColor: "#32963C",
+    accentColor: "#00EB17",
   },
   {
-    icon: "👥",
+    icon: <MessageIcon className="w-8 h-8" />,
     title: "Share & Collaborate",
     description:
       "Pin your favorite problems, share with friends, and learn from the community. Coding is better together.",
-    accentColor: "#366B3B",
+    accentColor: "#00EB17",
   },
 ];
 
@@ -64,7 +68,7 @@ export const FeatureShowcase: React.FC = () => {
           }
         });
       },
-      { threshold: 0.3 }
+      { threshold: 0.3 },
     );
 
     observer.observe(titleRef.current);

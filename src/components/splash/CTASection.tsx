@@ -105,19 +105,19 @@ export const CTASection: React.FC = () => {
         </h2>
 
         <p className="cta-subtitle font-raleway text-xl md:text-2xl text-white/60 mb-12 max-w-2xl mx-auto opacity-0">
-          Join thousands of developers who practice smarter with LeetGo. Your
-          next interview awaits.
+          Join a growing community of developers mastering algorithms with
+          AI-driven practice. Your journey to coding excellence starts here.
         </p>
 
         <button
           onClick={() => navigate("/signup")}
           className="cta-button splash-btn-primary text-xl px-14 py-5 opacity-0"
         >
-          Start Your Journey
+          Join the Wait List
         </button>
 
         <p className="mt-8 text-white/40 text-sm">
-          Free forever. No credit card required.
+          Free forever. No credit card required. Upgrade anytime.
         </p>
       </div>
     </section>

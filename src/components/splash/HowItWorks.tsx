@@ -181,18 +181,40 @@ export const HowItWorks: React.FC = () => {
         <div className="relative">
           {/* Desktop: Horizontal layout */}
           <div className="hidden lg:block">
-            {/* Node row with connecting lines */}
-            <div className="flex items-center justify-between mb-8">
+            {/* Connecting lines (absolute positioned between nodes) */}
+            <div className="absolute top-10 left-0 right-0 flex items-center px-[calc(12.5%-10px)]">
+              {[0, 1, 2].map((lineIndex) => (
+                <div key={lineIndex} className="flex-1 h-0.75 mx-4 relative">
+                  {/* Background track */}
+                  <div className="absolute inset-0 bg-leetgo-muted/40 rounded-full" />
+                  {/* Animated fill */}
+                  <div
+                    className="absolute inset-y-0 left-0 rounded-full transition-all duration-100"
+                    style={{
+                      width: `${getLineProgress(lineIndex, progress) * 100}%`,
+                      background: "linear-gradient(90deg, #00EB17, #20C030, #00EB17)",
+                      boxShadow:
+                        getLineProgress(lineIndex, progress) > 0
+                          ? "0 0 12px rgba(0, 235, 23, 0.6), 0 0 24px rgba(0, 235, 23, 0.3)"
+                          : "none",
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Grid with nodes and content together */}
+            <div className="grid grid-cols-4 gap-6">
               {steps.map((step, index) => {
                 const stepProgress = getStepProgress(index, progress);
                 const isActive = stepProgress > 0;
                 const isComplete = stepProgress >= 1;
 
                 return (
-                  <div key={step.number} className="flex items-center">
+                  <div key={step.number} className="flex flex-col items-center">
                     {/* Node */}
                     <div
-                      className="relative z-10 w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300"
+                      className="relative z-10 w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 mb-6"
                       style={{
                         background: isActive
                           ? `linear-gradient(135deg, rgba(0, 235, 23, ${0.15 + stepProgress * 0.15}) 0%, rgba(32, 192, 48, ${0.1 + stepProgress * 0.1}) 100%)`
@@ -231,78 +253,43 @@ export const HowItWorks: React.FC = () => {
                             : isActive
                               ? `rgba(255, 255, 255, ${0.5 + stepProgress * 0.5})`
                               : "rgba(255, 255, 255, 0.3)",
-                          border: isActive
-                            ? "none"
-                            : "1px solid rgba(43, 51, 43, 0.8)",
-                          boxShadow: isComplete
-                            ? "0 0 10px rgba(0, 235, 23, 0.5)"
-                            : "none",
+                          border: isActive ? "none" : "1px solid rgba(43, 51, 43, 0.8)",
+                          boxShadow: isComplete ? "0 0 10px rgba(0, 235, 23, 0.5)" : "none",
                         }}
                       >
                         {step.number}
                       </div>
                     </div>
 
-                    {/* Connecting line (after each node except the last) */}
-                    {index < steps.length - 1 && (
-                      <div className="flex-1 mx-4 h-[3px] relative">
-                        {/* Background track */}
-                        <div className="absolute inset-0 bg-leetgo-muted/40 rounded-full" />
-                        {/* Animated fill */}
-                        <div
-                          className="absolute inset-y-0 left-0 rounded-full transition-all duration-100"
-                          style={{
-                            width: `${getLineProgress(index, progress) * 100}%`,
-                            background:
-                              "linear-gradient(90deg, #00EB17, #20C030, #00EB17)",
-                            boxShadow:
-                              getLineProgress(index, progress) > 0
-                                ? "0 0 12px rgba(0, 235, 23, 0.6), 0 0 24px rgba(0, 235, 23, 0.3)"
-                                : "none",
-                          }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Content row */}
-            <div className="grid grid-cols-4 gap-6">
-              {steps.map((step, index) => {
-                const stepProgress = getStepProgress(index, progress);
-                const isActive = stepProgress > 0;
-
-                return (
-                  <div
-                    key={`content-${step.number}`}
-                    className="text-center transition-all duration-300"
-                    style={{
-                      opacity: isActive ? 0.4 + stepProgress * 0.6 : 0.3,
-                      transform: `translateY(${isActive ? 0 : 10}px)`,
-                    }}
-                  >
-                    <h3
-                      className="font-eb-garamond text-lg font-semibold mb-2 transition-colors duration-300"
+                    {/* Content */}
+                    <div
+                      className="text-center transition-all duration-300"
                       style={{
-                        color: isActive
-                          ? `rgba(255, 255, 255, ${0.7 + stepProgress * 0.3})`
-                          : "rgba(255, 255, 255, 0.4)",
+                        opacity: isActive ? 0.4 + stepProgress * 0.6 : 0.3,
+                        transform: `translateY(${isActive ? 0 : 10}px)`,
                       }}
                     >
-                      {step.title}
-                    </h3>
-                    <p
-                      className="font-raleway text-sm leading-relaxed transition-colors duration-300"
-                      style={{
-                        color: isActive
-                          ? `rgba(255, 255, 255, ${0.4 + stepProgress * 0.2})`
-                          : "rgba(255, 255, 255, 0.25)",
-                      }}
-                    >
-                      {step.description}
-                    </p>
+                      <h3
+                        className="font-eb-garamond text-lg font-semibold mb-2 transition-colors duration-300"
+                        style={{
+                          color: isActive
+                            ? `rgba(255, 255, 255, ${0.7 + stepProgress * 0.3})`
+                            : "rgba(255, 255, 255, 0.4)",
+                        }}
+                      >
+                        {step.title}
+                      </h3>
+                      <p
+                        className="font-raleway text-sm leading-relaxed transition-colors duration-300"
+                        style={{
+                          color: isActive
+                            ? `rgba(255, 255, 255, ${0.4 + stepProgress * 0.2})`
+                            : "rgba(255, 255, 255, 0.25)",
+                        }}
+                      >
+                        {step.description}
+                      </p>
+                    </div>
                   </div>
                 );
               })}
