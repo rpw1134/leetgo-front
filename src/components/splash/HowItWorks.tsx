@@ -153,7 +153,7 @@ export const HowItWorks: React.FC = () => {
     >
       {/* Subtle background glow */}
       <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[500px] opacity-20 pointer-events-none"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-225 h-125 opacity-20 pointer-events-none"
         style={{
           background:
             "radial-gradient(ellipse, rgba(0, 235, 23, 0.12) 0%, transparent 70%)",
@@ -192,7 +192,8 @@ export const HowItWorks: React.FC = () => {
                     className="absolute inset-y-0 left-0 rounded-full transition-all duration-100"
                     style={{
                       width: `${getLineProgress(lineIndex, progress) * 100}%`,
-                      background: "linear-gradient(90deg, #00EB17, #20C030, #00EB17)",
+                      background:
+                        "linear-gradient(90deg, #00EB17, #20C030, #00EB17)",
                       boxShadow:
                         getLineProgress(lineIndex, progress) > 0
                           ? "0 0 12px rgba(0, 235, 23, 0.6), 0 0 24px rgba(0, 235, 23, 0.3)"
@@ -253,8 +254,12 @@ export const HowItWorks: React.FC = () => {
                             : isActive
                               ? `rgba(255, 255, 255, ${0.5 + stepProgress * 0.5})`
                               : "rgba(255, 255, 255, 0.3)",
-                          border: isActive ? "none" : "1px solid rgba(43, 51, 43, 0.8)",
-                          boxShadow: isComplete ? "0 0 10px rgba(0, 235, 23, 0.5)" : "none",
+                          border: isActive
+                            ? "none"
+                            : "1px solid rgba(43, 51, 43, 0.8)",
+                          boxShadow: isComplete
+                            ? "0 0 10px rgba(0, 235, 23, 0.5)"
+                            : "none",
                         }}
                       >
                         {step.number}
@@ -306,7 +311,7 @@ export const HowItWorks: React.FC = () => {
                 <div key={step.number} className="relative">
                   {/* Vertical connecting line */}
                   {index < steps.length - 1 && (
-                    <div className="absolute left-10 top-20 w-[3px] h-[calc(100%+2rem)] -translate-x-1/2">
+                    <div className="absolute left-10 top-20 w-0.75 h-[calc(100%+2rem)] -translate-x-1/2">
                       <div className="absolute inset-0 bg-leetgo-muted/40 rounded-full" />
                       <div
                         className="absolute inset-x-0 top-0 rounded-full transition-all duration-100"
@@ -326,7 +331,7 @@ export const HowItWorks: React.FC = () => {
                   <div className="flex items-start gap-6">
                     {/* Node */}
                     <div
-                      className="relative z-10 w-20 h-20 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300"
+                      className="relative z-10 w-20 h-20 rounded-full flex items-center justify-center shrink-0 transition-all duration-300"
                       style={{
                         background: isActive
                           ? `linear-gradient(135deg, rgba(0, 235, 23, ${0.15 + stepProgress * 0.15}) 0%, rgba(32, 192, 48, ${0.1 + stepProgress * 0.1}) 100%)`

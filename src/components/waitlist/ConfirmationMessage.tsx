@@ -41,13 +41,13 @@ export const ConfirmationMessage = ({ email }: ConfirmationMessageProps) => {
           ref={checkmarkRef}
           className="
             w-20 h-20 rounded-full
-            bg-gradient-to-br from-[var(--color-leetgo-bright)] to-[var(--color-leetgo-primary)]
+            bg-linear-to-br from-leetgo-bright to-leetgo-primary
             flex items-center justify-center
-            shadow-lg shadow-[var(--color-leetgo-bright)]/30
+            shadow-lg shadow-(--color-leetgo-bright)/30
           "
         >
           <svg
-            className="w-10 h-10 text-[var(--color-leetgo-darkest)]"
+            className="w-10 h-10 text-leetgo-darkest"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -72,7 +72,7 @@ export const ConfirmationMessage = ({ email }: ConfirmationMessageProps) => {
         <p className="text-lg text-gray-300 font-raleway">
           We've sent a confirmation email to:
         </p>
-        <p className="text-xl font-semibold text-[var(--color-leetgo-bright)] font-raleway">
+        <p className="text-xl font-semibold text-leetgo-bright font-raleway">
           {email}
         </p>
         <p className="text-gray-400 font-raleway">
@@ -84,8 +84,8 @@ export const ConfirmationMessage = ({ email }: ConfirmationMessageProps) => {
       <div
         className="
         mt-8 p-6 rounded-xl
-        bg-[var(--color-leetgo-darkest)]/50
-        border border-[var(--color-leetgo-forest)]/30
+        bg-leetgo-darkest/50
+        border border-leetgo-forest/30
         backdrop-blur-sm
       "
       >

@@ -42,16 +42,16 @@ export const WaitlistForm = ({ onSubmit }: WaitlistFormProps) => {
           placeholder="Enter your email address"
           className={`
             w-full px-6 py-4
-            bg-[var(--color-leetgo-darkest)]/50
+            bg-leetgo-darkest/50
             border-2 rounded-xl
             text-white font-raleway text-lg
             placeholder-gray-400
-            focus:outline-none focus:ring-2 focus:ring-[var(--color-leetgo-bright)]
+            focus:outline-none focus:ring-2 focus:ring-leetgo-bright
             transition-all duration-300
             backdrop-blur-sm
             ${
               isValid
-                ? "border-[var(--color-leetgo-forest)]/50 hover:border-[var(--color-leetgo-primary)]"
+                ? "border-leetgo-forest/50 hover:border-leetgo-primary"
                 : "border-red-500 shake-animation"
             }
           `}

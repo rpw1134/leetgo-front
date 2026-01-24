@@ -29,7 +29,7 @@ export const Waitlist = () => {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-[var(--color-leetgo-darkest)]">
+    <div className="min-h-screen relative overflow-hidden bg-leetgo-darkest">
       {/* Background gradient */}
       <div className="hero-bg-gradient absolute inset-0" />
 
@@ -82,7 +82,7 @@ export const Waitlist = () => {
                 <div className="space-y-4 opacity-0">
                   <h1 className="text-5xl md:text-6xl lg:text-7xl font-garamond font-bold text-white">
                     Join the{" "}
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-leetgo-bright)] to-[var(--color-leetgo-primary)]">
+                    <span className="text-transparent bg-clip-text bg-linear-to-r from-leetgo-bright to-leetgo-primary">
                       Wait List
                     </span>
                   </h1>
