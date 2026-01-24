@@ -1,9 +1,11 @@
 import { useEffect, useRef } from "react";
 import { animate, stagger, utils } from "animejs";
+import { useNavigate } from "react-router-dom";
 import { NodeGraph } from "../SVGs/NodeGraph";
 
 export const CTASection: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!sectionRef.current) return;
@@ -52,7 +54,7 @@ export const CTASection: React.FC = () => {
           }
         });
       },
-      { threshold: 0.3 }
+      { threshold: 0.3 },
     );
 
     observer.observe(sectionRef.current);
@@ -79,7 +81,8 @@ export const CTASection: React.FC = () => {
         <div
           className="absolute w-96 h-96 rounded-full blur-3xl animate-pulse"
           style={{
-            background: "radial-gradient(circle, rgba(0, 235, 23, 0.2) 0%, transparent 70%)",
+            background:
+              "radial-gradient(circle, rgba(0, 235, 23, 0.2) 0%, transparent 70%)",
             left: "20%",
             top: "30%",
           }}
@@ -87,7 +90,8 @@ export const CTASection: React.FC = () => {
         <div
           className="absolute w-64 h-64 rounded-full blur-3xl animate-pulse"
           style={{
-            background: "radial-gradient(circle, rgba(32, 192, 48, 0.15) 0%, transparent 70%)",
+            background:
+              "radial-gradient(circle, rgba(32, 192, 48, 0.15) 0%, transparent 70%)",
             right: "25%",
             bottom: "20%",
             animationDelay: "1s",
@@ -97,16 +101,18 @@ export const CTASection: React.FC = () => {
 
       <div className="relative z-10 max-w-4xl mx-auto text-center">
         <h2 className="cta-title font-eb-garamond text-5xl md:text-6xl lg:text-7xl font-medium text-white mb-8 opacity-0">
-          Ready to{" "}
-          <span className="text-leetgo-bright">Level Up</span>?
+          Ready to <span className="text-leetgo-bright">Level Up</span>?
         </h2>
 
         <p className="cta-subtitle font-raleway text-xl md:text-2xl text-white/60 mb-12 max-w-2xl mx-auto opacity-0">
-          Join thousands of developers who practice smarter with LeetGo.
-          Your next interview awaits.
+          Join thousands of developers who practice smarter with LeetGo. Your
+          next interview awaits.
         </p>
 
-        <button className="cta-button splash-btn-primary text-xl px-14 py-5 opacity-0">
+        <button
+          onClick={() => navigate("/signup")}
+          className="cta-button splash-btn-primary text-xl px-14 py-5 opacity-0"
+        >
           Start Your Journey
         </button>
 

@@ -1,13 +1,8 @@
-import { useEffect, useRef } from "react";
-import { animate, stagger } from "animejs";
+import { HeroLogo } from "./HeroLogo";
 import { ProblemCard } from "./ProblemCard";
+import { useNavigate } from "react-router-dom";
 
 const sampleProblems = [
-  {
-    title: "Find the Longest Palindromic Substring in a Rotated Array",
-    difficulty: "medium" as const,
-    tags: ["Dynamic Programming", "Strings"],
-  },
   {
     title: "Merge K Sorted Binary Trees",
     difficulty: "hard" as const,
@@ -18,185 +13,128 @@ const sampleProblems = [
     difficulty: "easy" as const,
     tags: ["Arrays", "Hash Map"],
   },
+  {
+    title: "Find the Longest Palindromic Substring",
+    difficulty: "medium" as const,
+    tags: ["Dynamic Programming", "Strings"],
+  },
 ];
 
 export const HeroSection: React.FC = () => {
-  const heroRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!heroRef.current) return;
-
-    // Animate the left content
-    animate(".hero-eyebrow", {
-      translateX: [-30, 0],
-      opacity: [0, 1],
-      ease: "outExpo",
-      duration: 800,
-      delay: 300,
-    });
-
-    animate(".hero-headline", {
-      translateY: [40, 0],
-      opacity: [0, 1],
-      ease: "outExpo",
-      duration: 1000,
-      delay: 500,
-    });
-
-    animate(".hero-description", {
-      translateY: [30, 0],
-      opacity: [0, 1],
-      ease: "outExpo",
-      duration: 800,
-      delay: 800,
-    });
-
-    animate(".hero-cta", {
-      translateY: [20, 0],
-      opacity: [0, 1],
-      ease: "outExpo",
-      duration: 800,
-      delay: stagger(100, { start: 1000 }),
-    });
-
-    animate(".hero-stat", {
-      translateY: [20, 0],
-      opacity: [0, 1],
-      ease: "outExpo",
-      duration: 600,
-      delay: stagger(100, { start: 1200 }),
-    });
-
-    // Animate problem cards cascading in
-    animate(".hero-problem-card", {
-      translateX: [100, 0],
-      translateY: [50, 0],
-      opacity: [0, 1],
-      rotate: [8, 0],
-      ease: "outExpo",
-      duration: 1200,
-      delay: stagger(200, { start: 600 }),
-    });
-
-    // Floating particles
-    animate(".hero-particle", {
-      translateY: [0, -20],
-      opacity: [0.2, 0.6],
-      ease: "inOutSine",
-      duration: 3000,
-      alternate: true,
-      loop: true,
-      delay: stagger(200),
-    });
-  }, []);
+  const scrollToHowItWorks = () => {
+    const section = document.getElementById("how-it-works");
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
-    <section
-      ref={heroRef}
-      className="relative min-h-screen flex items-center overflow-hidden"
-    >
-      {/* Background gradient mesh */}
+    <section className="relative min-h-screen flex flex-col justify-center overflow-hidden">
+      {/* Layered background */}
       <div className="absolute inset-0 hero-bg-gradient" />
 
-      {/* Floating particles */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {Array.from({ length: 15 }).map((_, i) => (
-          <div
-            key={i}
-            className="hero-particle absolute w-1 h-1 rounded-full bg-leetgo-bright/30"
-            style={{
-              left: `${10 + Math.random() * 80}%`,
-              top: `${10 + Math.random() * 80}%`,
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Diagonal accent line */}
+      {/* Grid pattern overlay */}
       <div
-        className="absolute top-0 right-0 w-1/2 h-full pointer-events-none opacity-10"
+        className="absolute inset-0 opacity-[0.02]"
         style={{
-          background: `linear-gradient(135deg, transparent 40%, rgba(0, 235, 23, 0.3) 50%, transparent 60%)`,
+          backgroundImage: `
+            linear-gradient(rgba(0, 235, 23, 0.5) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 235, 23, 0.5) 1px, transparent 1px)
+          `,
+          backgroundSize: "60px 60px",
         }}
       />
 
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-8 py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          {/* Left side - Text content */}
-          <div className="order-2 lg:order-1">
-            <div className="hero-eyebrow flex items-center gap-3 mb-6 opacity-0">
-              <div className="w-8 h-px bg-leetgo-bright" />
-              <span className="text-leetgo-bright text-sm font-medium tracking-widest uppercase">
-                AI-Powered Practice
-              </span>
+      {/* Floating problem cards - positioned around edges */}
+      <div className="absolute inset-0 pointer-events-none hidden lg:block">
+        <div className="absolute top-[15%] left-[5%] w-64 float-animation -rotate-6">
+          <ProblemCard {...sampleProblems[0]} />
+        </div>
+        <div className="absolute bottom-[20%] left-[8%] w-56 float-animation-delayed rotate-3">
+          <ProblemCard {...sampleProblems[1]} />
+        </div>
+        <div className="absolute top-[25%] right-[5%] w-64 float-animation rotate-3">
+          <ProblemCard {...sampleProblems[2]} isNew />
+        </div>
+      </div>
+
+      {/* Main content */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-8">
+        {/* Top tagline - left aligned */}
+        <div className="mb-8 md:mb-12">
+          <div className="flex flex-wrap gap-x-4 text-white/40 text-sm md:text-base tracking-widest uppercase">
+            <span>AI-Powered</span>
+            <span>Algorithm</span>
+            <span>Practice</span>
+          </div>
+        </div>
+
+        {/* Center logo and brand */}
+        <div className="flex flex-col items-center mb-8 md:mb-12">
+          <HeroLogo />
+          <h1 className="font-eb-garamond text-5xl md:text-6xl lg:text-7xl font-medium text-white mt-6">
+            Leet<span className="text-leetgo-bright">Go</span>
+          </h1>
+        </div>
+
+        {/* Bottom tagline - right aligned */}
+        <div className="flex justify-end mb-12 md:mb-16">
+          <div className="text-right">
+            <div className="flex flex-wrap justify-end gap-x-3 text-xl md:text-2xl lg:text-3xl font-eb-garamond">
+              <span className="text-white">Fresh problems.</span>
+              <span className="text-leetgo-bright">Every time.</span>
             </div>
-
-            <h1 className="hero-headline font-eb-garamond text-4xl md:text-5xl lg:text-6xl font-medium text-white leading-tight mb-6 opacity-0">
-              Fresh problems.
-              <br />
-              <span className="text-leetgo-bright">Every single time.</span>
-            </h1>
-
-            <p className="hero-description font-raleway text-lg text-white/60 max-w-lg mb-10 leading-relaxed opacity-0">
-              Stop memorizing solutions. LeetGo generates unique algorithm
-              challenges tailored to your skill level, so you're always
-              solving something new.
+            <p className="text-white/50 text-sm md:text-base mt-3 max-w-md ml-auto">
+              Stop memorizing solutions. Practice with unique, AI-generated
+              challenges tailored to your skill level.
             </p>
+          </div>
+        </div>
 
-            <div className="flex flex-wrap gap-4 mb-12">
-              <button className="hero-cta splash-btn-primary px-8 py-4 opacity-0">
-                Start Practicing Free
-              </button>
-              <button className="hero-cta splash-btn-secondary px-8 py-4 opacity-0">
-                How It Works
-              </button>
-            </div>
-
-            {/* Stats */}
-            <div className="flex gap-10">
-              <div className="hero-stat opacity-0">
-                <div className="font-eb-garamond text-3xl font-semibold text-white">
-                  <span className="text-leetgo-bright">∞</span>
-                </div>
-                <div className="text-white/40 text-sm mt-1">Unique Problems</div>
-              </div>
-              <div className="hero-stat opacity-0">
-                <div className="font-eb-garamond text-3xl font-semibold text-white">
-                  12k<span className="text-leetgo-bright">+</span>
-                </div>
-                <div className="text-white/40 text-sm mt-1">Active Users</div>
-              </div>
-              <div className="hero-stat opacity-0">
-                <div className="font-eb-garamond text-3xl font-semibold text-white">
-                  4.9<span className="text-leetgo-bright">/5</span>
-                </div>
-                <div className="text-white/40 text-sm mt-1">User Rating</div>
-              </div>
-            </div>
+        {/* CTA and stats row */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+          {/* CTAs */}
+          <div className="flex flex-wrap gap-4">
+            <button
+              onClick={() => navigate("/signup")}
+              className="splash-btn-primary px-8 py-4"
+            >
+              Start Practicing Free
+            </button>
+            <button
+              onClick={scrollToHowItWorks}
+              className="splash-btn-secondary px-8 py-4"
+            >
+              How It Works
+            </button>
           </div>
 
-          {/* Right side - Floating problem cards */}
-          <div className="order-1 lg:order-2 relative h-[400px] lg:h-[500px]">
-            {/* Glow effect behind cards */}
-            <div
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full blur-3xl opacity-30"
-              style={{
-                background: "radial-gradient(circle, rgba(0, 235, 23, 0.4) 0%, transparent 70%)",
-              }}
-            />
-
-            {/* Stacked problem cards */}
-            <div className="relative w-full h-full">
-              <div className="hero-problem-card absolute top-[5%] right-[5%] w-72 float-animation opacity-0">
-                <ProblemCard {...sampleProblems[1]} />
+          {/* Stats */}
+          <div className="flex gap-8 md:gap-12">
+            <div className="text-center md:text-right">
+              <div className="font-eb-garamond text-2xl md:text-3xl font-semibold text-leetgo-bright">
+                &#8734;
               </div>
-
-              <div className="hero-problem-card absolute top-[25%] left-[5%] lg:left-[10%] w-72 float-animation-delayed opacity-0">
-                <ProblemCard {...sampleProblems[2]} />
+              <div className="text-white/40 text-xs md:text-sm mt-1">
+                Unique Problems
               </div>
-
-              <div className="hero-problem-card absolute bottom-[10%] right-[10%] lg:right-[5%] w-80 opacity-0">
-                <ProblemCard {...sampleProblems[0]} isNew />
+            </div>
+            <div className="text-center md:text-right">
+              <div className="font-eb-garamond text-2xl md:text-3xl font-semibold text-white">
+                12k<span className="text-leetgo-bright">+</span>
+              </div>
+              <div className="text-white/40 text-xs md:text-sm mt-1">
+                Active Users
+              </div>
+            </div>
+            <div className="text-center md:text-right">
+              <div className="font-eb-garamond text-2xl md:text-3xl font-semibold text-white">
+                4.9<span className="text-leetgo-bright">/5</span>
+              </div>
+              <div className="text-white/40 text-xs md:text-sm mt-1">
+                User Rating
               </div>
             </div>
           </div>
@@ -205,10 +143,14 @@ export const HeroSection: React.FC = () => {
 
       {/* Scroll indicator */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
-        <div className="scroll-indicator w-6 h-10 rounded-full border-2 border-white/20 flex items-start justify-center p-2">
+        <div className="w-6 h-10 rounded-full border-2 border-white/20 flex items-start justify-center p-2">
           <div className="w-1 h-2 rounded-full bg-leetgo-bright animate-bounce" />
         </div>
       </div>
+
+      {/* Corner accents */}
+      <div className="absolute top-0 left-0 w-32 h-32 border-l-2 border-t-2 border-leetgo-bright/20 m-8 pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-32 h-32 border-r-2 border-b-2 border-leetgo-bright/20 m-8 pointer-events-none" />
     </section>
   );
 };
