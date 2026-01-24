@@ -110,7 +110,7 @@ export const CTASection: React.FC = () => {
         </p>
 
         <button
-          onClick={() => navigate("/signup")}
+          onClick={() => navigate("/waitlist")}
           className="cta-button splash-btn-primary text-xl px-14 py-5 opacity-0"
         >
           Join the Wait List

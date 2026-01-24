@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import { Splash } from "./routes/Splash";
 import { Error } from "./routes/Error";
 import { Signup } from "./routes/Signup";
+import { Waitlist } from "./routes/Waitlist";
 import { Root } from "./routes/Root";
 
 export const router = createBrowserRouter([
@@ -17,6 +18,10 @@ export const router = createBrowserRouter([
       {
         path: "signup",
         element: <Signup />,
+      },
+      {
+        path: "waitlist",
+        element: <Waitlist />,
       },
     ],
   },

@@ -105,7 +105,7 @@ export const HeroSection: React.FC = () => {
           {/* CTAs */}
           <div className="flex flex-wrap gap-4">
             <button
-              onClick={() => navigate("/signup")}
+              onClick={() => navigate("/waitlist")}
               className="splash-btn-primary px-8 py-4"
             >
               Join the Wait List

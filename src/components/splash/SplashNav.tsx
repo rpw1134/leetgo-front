@@ -1,8 +1,10 @@
 import { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { animate, stagger } from "animejs";
 
 export const SplashNav: React.FC = () => {
   const navRef = useRef<HTMLElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!navRef.current) return;
@@ -66,8 +68,11 @@ export const SplashNav: React.FC = () => {
         {/* <button className="nav-link splash-btn-secondary opacity-0">
           Sign In
         </button> */}
-        <button className="nav-link splash-btn-primary opacity-0">
-          Join the Wait List
+        <button
+          onClick={() => navigate("/waitlist")}
+          className="nav-link splash-btn-primary opacity-0"
+        >
+          Join the Waitlist
         </button>
       </div>
     </nav>
