@@ -1,4 +1,6 @@
-export const InfinityIcon: React.FC<{ className?: string }> = ({ className }) => (
+export const InfinityIcon: React.FC<{ className?: string }> = ({
+  className,
+}) => (
   <svg
     viewBox="0 0 24 24"
     fill="none"

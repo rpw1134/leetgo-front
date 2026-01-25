@@ -1,4 +1,6 @@
-export const MessageIcon: React.FC<{ className?: string }> = ({ className }) => (
+export const MessageIcon: React.FC<{ className?: string }> = ({
+  className,
+}) => (
   <svg
     viewBox="0 0 24 24"
     fill="none"
@@ -13,7 +15,7 @@ export const MessageIcon: React.FC<{ className?: string }> = ({ className }) => 
       strokeLinejoin="round"
       opacity="0" // Hide complex path, use simpler
     />
-     <path
+    <path
       d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V7C3 6.46957 3.21071 5.96086 3.58579 5.58579C3.96086 5.21071 4.46957 5 5 5H19C19.5304 5 20.0391 5.21071 20.4142 5.58579C20.7893 5.96086 21 6.46957 21 7V15Z"
       stroke="currentColor"
       strokeWidth="1.5"
