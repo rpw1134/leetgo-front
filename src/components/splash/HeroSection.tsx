@@ -108,7 +108,7 @@ export const HeroSection: React.FC = () => {
               onClick={() => navigate("/waitlist")}
               className="splash-btn-primary px-8 py-4"
             >
-              Join the Wait List
+              Join the Waitlist
             </button>
             <button
               onClick={scrollToHowItWorks}
