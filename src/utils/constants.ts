@@ -1,4 +1,4 @@
-export const SIGNUP_EMAIL_HTML = `
+const SIGNUP_EMAIL_HTML = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -91,3 +91,7 @@ export const SIGNUP_EMAIL_HTML = `
 </body>
 </html>
 `;
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+
+export { API_URL, SIGNUP_EMAIL_HTML };

@@ -1,4 +1,6 @@
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { addUserToWaitlist } from "../../utils/api/waitlist";
 
 interface WaitlistFormProps {
   onSubmit: (email: string) => void;
@@ -8,21 +10,29 @@ export const WaitlistForm = ({ onSubmit }: WaitlistFormProps) => {
   const [email, setEmail] = useState("");
   const [isValid, setIsValid] = useState(true);
 
+  const { mutateAsync, isPending, isError, error } = useMutation({
+    mutationFn: addUserToWaitlist,
+  });
+
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validateEmail(email)) {
       setIsValid(false);
       return;
     }
-
-    setIsValid(true);
-    onSubmit(email);
+    try {
+      await mutateAsync(email);
+      setIsValid(true);
+    } catch (err) {
+      console.error("Failed to add user to waitlist:", err);
+      return;
+    }
   };
 
   const handleEmailChange = (value: string) => {
