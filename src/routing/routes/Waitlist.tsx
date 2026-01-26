@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { animate, stagger } from "animejs";
 import { WaitlistForm } from "../../components/waitlist/WaitlistForm";
 import { ConfirmationMessage } from "../../components/waitlist/ConfirmationMessage";
+import { GridOverlay } from "../../components/reusable/backgrounds/GridOverlay";
 
 export const Waitlist = () => {
   const [submittedEmail, setSubmittedEmail] = useState<string | null>(null);
@@ -36,17 +37,7 @@ export const Waitlist = () => {
       {/* Grain overlay */}
       <div className="grain-overlay absolute inset-0 opacity-[0.03]" />
 
-      {/* Grid pattern overlay */}
-      <div
-        className="absolute inset-0 opacity-[0.02]"
-        style={{
-          backgroundImage: `
-            linear-gradient(var(--color-leetgo-primary) 1px, transparent 1px),
-            linear-gradient(90deg, var(--color-leetgo-primary) 1px, transparent 1px)
-          `,
-          backgroundSize: "50px 50px",
-        }}
-      />
+      <GridOverlay size={50} opacity={0.02} />
 
       {/* Main content */}
       <div className="relative z-10 min-h-screen flex flex-col">

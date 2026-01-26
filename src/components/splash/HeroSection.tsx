@@ -1,6 +1,7 @@
 import { HeroLogo } from "./HeroLogo";
 import { ProblemCard } from "./ProblemCard";
 import { useNavigate } from "react-router-dom";
+import { GridOverlay } from "../reusable/backgrounds/GridOverlay";
 
 const sampleProblems = [
   {
@@ -42,17 +43,7 @@ export const HeroSection: React.FC = () => {
       {/* Layered background */}
       <div className="absolute inset-0 hero-bg-gradient" />
 
-      {/* Grid pattern overlay */}
-      <div
-        className="absolute inset-0 opacity-[0.02]"
-        style={{
-          backgroundImage: `
-            linear-gradient(rgba(0, 235, 23, 0.5) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0, 235, 23, 0.5) 1px, transparent 1px)
-          `,
-          backgroundSize: "60px 60px",
-        }}
-      />
+      <GridOverlay size={60} opacity={0.02} />
 
       {/* Floating problem cards - positioned around edges */}
       <div className="absolute inset-0 pointer-events-none hidden lg:block">
