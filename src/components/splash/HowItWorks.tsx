@@ -132,7 +132,7 @@ export const HowItWorks: React.FC = () => {
 
       {/* Subtle base background glow - always visible */}
       <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[500px] opacity-20 pointer-events-none"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-225 h-125 opacity-20 pointer-events-none"
         style={{
           background:
             "radial-gradient(ellipse, rgba(0, 235, 23, 0.12) 0%, transparent 70%)",

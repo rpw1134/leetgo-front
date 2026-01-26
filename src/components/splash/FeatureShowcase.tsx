@@ -114,34 +114,18 @@ export const FeatureShowcase: React.FC = () => {
           </div>
           <div className="md:w-2/5 md:pb-4">
             <p className="feature-subtitle font-raleway text-xl text-white/60 opacity-0 border-l-2 border-leetgo-primary/30 pl-6">
-              Built for learners who want genuine practice, not pattern matching.
-              Experiences tailored to your growing skill level.
+              Built for learners who want genuine practice, not pattern
+              matching. Experiences tailored to your growing skill level.
             </p>
           </div>
         </div>
 
         {/* Feature grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-          <FeatureCard
-            {...features[0]}
-            index={0}
-            className="md:col-span-2"
-          />
-          <FeatureCard
-            {...features[1]}
-            index={1}
-            className="md:col-span-1"
-          />
-          <FeatureCard
-            {...features[2]}
-            index={2}
-            className="md:col-span-1"
-          />
-          <FeatureCard
-            {...features[3]}
-            index={3}
-            className="md:col-span-2"
-          />
+          <FeatureCard {...features[0]} index={0} className="md:col-span-2" />
+          <FeatureCard {...features[1]} index={1} className="md:col-span-1" />
+          <FeatureCard {...features[2]} index={2} className="md:col-span-1" />
+          <FeatureCard {...features[3]} index={3} className="md:col-span-2" />
         </div>
       </div>
     </section>
