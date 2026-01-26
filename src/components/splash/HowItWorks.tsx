@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const steps = [
   {
@@ -75,69 +75,38 @@ const steps = [
 
 export const HowItWorks: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const [progress, setProgress] = useState(0);
-
-  // Calculate which step is active based on progress
-  const getStepProgress = useCallback(
-    (stepIndex: number, currentProgress: number) => {
-      // Each step occupies 1/4 of the progress
-      const stepStart = stepIndex / steps.length;
-      const stepEnd = (stepIndex + 1) / steps.length;
-
-      if (currentProgress <= stepStart) return 0;
-      if (currentProgress >= stepEnd) return 1;
-      return (currentProgress - stepStart) / (stepEnd - stepStart);
-    },
-    [],
-  );
-
-  // Calculate line segment progress (lines are BETWEEN nodes)
-  const getLineProgress = useCallback(
-    (lineIndex: number, currentProgress: number) => {
-      // 3 lines between 4 nodes
-      // Line 0: from progress 0.125 to 0.375 (between node 0 and 1)
-      // Line 1: from progress 0.375 to 0.625 (between node 1 and 2)
-      // Line 2: from progress 0.625 to 0.875 (between node 2 and 3)
-      const lineStart = (lineIndex + 0.5) / steps.length;
-      const lineEnd = (lineIndex + 1.5) / steps.length;
-
-      if (currentProgress <= lineStart) return 0;
-      if (currentProgress >= lineEnd) return 1;
-      return (currentProgress - lineStart) / (lineEnd - lineStart);
-    },
-    [],
-  );
+  const [nodesActive, setNodesActive] = useState<number>(-1);
 
   useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-
     const handleScroll = () => {
-      const rect = section.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
+      if (!sectionRef.current) return;
 
-      // Calculate progress: 0 when section is 20% into viewport, 1 when section top reaches 30% from top
-      // This makes the animation start after the section is visible and complete while still prominent
-      const startPoint = windowHeight * 0.7; // Section top at 70% down viewport (30% visible)
-      const endPoint = windowHeight * 0.3; // Section top at 30% from top of viewport
+      const rect = sectionRef.current.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
 
-      const currentPosition = rect.top;
+      // Calculate how far we've scrolled through the section
+      // 0 = section top is at viewport bottom
+      // 1 = section bottom is at viewport top
+      const scrollProgress = Math.max(
+        0,
+        Math.min(
+          1,
+          (viewportHeight - rect.top) / (viewportHeight + rect.height),
+        ),
+      );
 
-      if (currentPosition >= startPoint) {
-        setProgress(0);
-      } else if (currentPosition <= endPoint) {
-        setProgress(1);
-      } else {
-        const rawProgress =
-          (startPoint - currentPosition) / (startPoint - endPoint);
-        setProgress(Math.max(0, Math.min(1, rawProgress)));
-      }
+      // Map progress to steps (0 to 4)
+      // Accelerate animation to complete when section is centered (approx 0.5 scrollProgress)
+      // Using 2.5 multiplier ensures completion slightly before center for better feel
+      const activeIndex =
+        Math.floor(Math.min(1, scrollProgress * 2) * (steps.length + 0.5)) - 1;
+
+      setNodesActive(activeIndex);
     };
 
-    // Run once on mount
-    handleScroll();
+    window.addEventListener("scroll", handleScroll);
+    handleScroll(); // Check initial state
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -151,9 +120,19 @@ export const HowItWorks: React.FC = () => {
           "linear-gradient(180deg, rgba(10, 31, 12, 0.4) 0%, rgba(43, 51, 43, 0.3) 50%, rgba(10, 31, 12, 0.5) 100%)",
       }}
     >
-      {/* Subtle background glow */}
+      {/* Animated glow overlay */}
       <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-225 h-125 opacity-20 pointer-events-none"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[130%] h-[130%] pointer-events-none transition-opacity duration-1000 ease-in-out"
+        style={{
+          background:
+            "radial-gradient(ellipse at center, rgba(0, 235, 23, 0.35) 0%, rgba(0, 235, 23, 0.12) 35%, transparent 65%)",
+          opacity: nodesActive >= 0 ? 0.4 : 0,
+        }}
+      />
+
+      {/* Subtle base background glow - always visible */}
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[500px] opacity-20 pointer-events-none"
         style={{
           background:
             "radial-gradient(ellipse, rgba(0, 235, 23, 0.12) 0%, transparent 70%)",
@@ -161,14 +140,8 @@ export const HowItWorks: React.FC = () => {
       />
 
       <div className="relative z-10 max-w-5xl mx-auto">
-        {/* Header */}
-        <div
-          className="text-center mb-24 transition-all duration-500"
-          style={{
-            opacity: Math.min(progress * 4, 1),
-            transform: `translateY(${Math.max(20 - progress * 80, 0)}px)`,
-          }}
-        >
+        {/* Header - always visible */}
+        <div className="text-center mb-24">
           <h2 className="font-eb-garamond text-4xl md:text-5xl font-medium text-white mb-4">
             How It <span className="text-leetgo-bright">Works</span>
           </h2>
@@ -181,228 +154,110 @@ export const HowItWorks: React.FC = () => {
         <div className="relative">
           {/* Desktop: Horizontal layout */}
           <div className="hidden lg:block">
-            {/* Connecting lines (absolute positioned between nodes) */}
-            <div className="absolute top-10 left-0 right-0 flex items-center px-[calc(12.5%-10px)]">
-              {[0, 1, 2].map((lineIndex) => (
-                <div key={lineIndex} className="flex-1 h-0.75 mx-4 relative">
-                  {/* Background track */}
-                  <div className="absolute inset-0 bg-leetgo-muted/40 rounded-full" />
-                  {/* Animated fill */}
-                  <div
-                    className="absolute inset-y-0 left-0 rounded-full transition-all duration-100"
-                    style={{
-                      width: `${getLineProgress(lineIndex, progress) * 100}%`,
-                      background:
-                        "linear-gradient(90deg, #00EB17, #20C030, #00EB17)",
-                      boxShadow:
-                        getLineProgress(lineIndex, progress) > 0
-                          ? "0 0 12px rgba(0, 235, 23, 0.6), 0 0 24px rgba(0, 235, 23, 0.3)"
-                          : "none",
-                    }}
-                  />
-                </div>
-              ))}
-            </div>
-
-            {/* Grid with nodes and content together */}
+            {/* Grid with nodes and content */}
             <div className="grid grid-cols-4 gap-6">
-              {steps.map((step, index) => {
-                const stepProgress = getStepProgress(index, progress);
-                const isActive = stepProgress > 0;
-                const isComplete = stepProgress >= 1;
+              {steps.map((step, index) => (
+                <div key={step.number} className="flex flex-col items-center">
+                  {/* Node - animates on scroll */}
+                  <div
+                    className="relative z-10 w-20 h-20 rounded-full flex items-center justify-center mb-6 border-2 transition-all duration-700 ease-out"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, rgba(0, 235, 23, 0.2) 0%, rgba(32, 192, 48, 0.1) 100%)",
+                      borderColor: "rgba(0, 235, 23, 0.5)",
+                      transform:
+                        index <= nodesActive ? "scale(1.15)" : "scale(0.9)",
+                      opacity: index <= nodesActive ? 1 : 0.3,
+                      boxShadow:
+                        index <= nodesActive
+                          ? "0 0 35px rgba(0, 235, 23, 0.6), inset 0 0 20px rgba(0, 235, 23, 0.15)"
+                          : "0 0 0 rgba(0, 235, 23, 0), inset 0 0 20px rgba(0, 235, 23, 0.15)",
+                    }}
+                  >
+                    <div className="text-leetgo-bright">{step.icon}</div>
 
-                return (
-                  <div key={step.number} className="flex flex-col items-center">
-                    {/* Node */}
+                    {/* Step number badge */}
                     <div
-                      className="relative z-10 w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 mb-6"
+                      className="absolute -top-1 -right-1 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-700"
                       style={{
-                        background: isActive
-                          ? `linear-gradient(135deg, rgba(0, 235, 23, ${0.15 + stepProgress * 0.15}) 0%, rgba(32, 192, 48, ${0.1 + stepProgress * 0.1}) 100%)`
-                          : "linear-gradient(135deg, rgba(43, 51, 43, 0.6) 0%, rgba(43, 65, 45, 0.4) 100%)",
-                        border: isActive
-                          ? `2px solid rgba(0, 235, 23, ${0.3 + stepProgress * 0.4})`
-                          : "2px solid rgba(43, 51, 43, 0.5)",
-                        boxShadow: isActive
-                          ? `0 0 ${20 + stepProgress * 20}px rgba(0, 235, 23, ${stepProgress * 0.4}), inset 0 0 15px rgba(0, 235, 23, ${stepProgress * 0.15})`
-                          : "none",
-                        transform: `scale(${1 + stepProgress * 0.08})`,
-                      }}
-                    >
-                      <div
-                        className="transition-colors duration-300"
-                        style={{
-                          color: isActive
-                            ? `rgba(0, 235, 23, ${0.5 + stepProgress * 0.5})`
-                            : "rgba(255, 255, 255, 0.25)",
-                        }}
-                      >
-                        {step.icon}
-                      </div>
-
-                      {/* Step number badge */}
-                      <div
-                        className="absolute -top-1 -right-1 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300"
-                        style={{
-                          background: isComplete
-                            ? "#00EB17"
-                            : isActive
-                              ? `rgba(0, 235, 23, ${stepProgress * 0.8})`
-                              : "rgba(43, 51, 43, 0.6)",
-                          color: isComplete
-                            ? "#0a1f0c"
-                            : isActive
-                              ? `rgba(255, 255, 255, ${0.5 + stepProgress * 0.5})`
-                              : "rgba(255, 255, 255, 0.3)",
-                          border: isActive
-                            ? "none"
-                            : "1px solid rgba(43, 51, 43, 0.8)",
-                          boxShadow: isComplete
-                            ? "0 0 10px rgba(0, 235, 23, 0.5)"
+                        background: "#00EB17",
+                        color: "#0a1f0c",
+                        boxShadow:
+                          index <= nodesActive
+                            ? "0 0 15px rgba(0, 235, 23, 0.6)"
                             : "none",
-                        }}
-                      >
-                        {step.number}
-                      </div>
-                    </div>
-
-                    {/* Content */}
-                    <div
-                      className="text-center transition-all duration-300"
-                      style={{
-                        opacity: isActive ? 0.4 + stepProgress * 0.6 : 0.3,
-                        transform: `translateY(${isActive ? 0 : 10}px)`,
+                        opacity: index <= nodesActive ? 1 : 0.5,
                       }}
                     >
-                      <h3
-                        className="font-eb-garamond text-lg font-semibold mb-2 transition-colors duration-300"
-                        style={{
-                          color: isActive
-                            ? `rgba(255, 255, 255, ${0.7 + stepProgress * 0.3})`
-                            : "rgba(255, 255, 255, 0.4)",
-                        }}
-                      >
-                        {step.title}
-                      </h3>
-                      <p
-                        className="font-raleway text-sm leading-relaxed transition-colors duration-300"
-                        style={{
-                          color: isActive
-                            ? `rgba(255, 255, 255, ${0.4 + stepProgress * 0.2})`
-                            : "rgba(255, 255, 255, 0.25)",
-                        }}
-                      >
-                        {step.description}
-                      </p>
+                      {step.number}
                     </div>
                   </div>
-                );
-              })}
+
+                  {/* Content - always visible */}
+                  <div className="text-center">
+                    <h3 className="font-eb-garamond text-lg font-semibold mb-2 text-white">
+                      {step.title}
+                    </h3>
+                    <p className="font-raleway text-sm leading-relaxed text-white/60">
+                      {step.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
           {/* Mobile/Tablet: Vertical layout */}
           <div className="lg:hidden space-y-8">
-            {steps.map((step, index) => {
-              const stepProgress = getStepProgress(index, progress);
-              const isActive = stepProgress > 0;
+            {steps.map((step, index) => (
+              <div key={step.number} className="relative">
+                <div className="flex items-start gap-6">
+                  {/* Node - animates on scroll */}
+                  <div
+                    className="relative z-10 w-20 h-20 rounded-full flex items-center justify-center shrink-0 border-2 transition-all duration-700 ease-out"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, rgba(0, 235, 23, 0.2) 0%, rgba(32, 192, 48, 0.1) 100%)",
+                      borderColor: "rgba(0, 235, 23, 0.5)",
+                      transform:
+                        index <= nodesActive ? "scale(1.15)" : "scale(0.9)",
+                      opacity: index <= nodesActive ? 1 : 0.3,
+                      boxShadow:
+                        index <= nodesActive
+                          ? "0 0 35px rgba(0, 235, 23, 0.6), inset 0 0 20px rgba(0, 235, 23, 0.15)"
+                          : "0 0 0 rgba(0, 235, 23, 0), inset 0 0 20px rgba(0, 235, 23, 0.15)",
+                    }}
+                  >
+                    <div className="text-leetgo-bright">{step.icon}</div>
 
-              return (
-                <div key={step.number} className="relative">
-                  {/* Vertical connecting line */}
-                  {index < steps.length - 1 && (
-                    <div className="absolute left-10 top-20 w-0.75 h-[calc(100%+2rem)] -translate-x-1/2">
-                      <div className="absolute inset-0 bg-leetgo-muted/40 rounded-full" />
-                      <div
-                        className="absolute inset-x-0 top-0 rounded-full transition-all duration-100"
-                        style={{
-                          height: `${getLineProgress(index, progress) * 100}%`,
-                          background:
-                            "linear-gradient(180deg, #00EB17, #20C030)",
-                          boxShadow:
-                            getLineProgress(index, progress) > 0
-                              ? "0 0 10px rgba(0, 235, 23, 0.5)"
-                              : "none",
-                        }}
-                      />
-                    </div>
-                  )}
-
-                  <div className="flex items-start gap-6">
-                    {/* Node */}
                     <div
-                      className="relative z-10 w-20 h-20 rounded-full flex items-center justify-center shrink-0 transition-all duration-300"
+                      className="absolute -top-1 -right-1 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-700"
                       style={{
-                        background: isActive
-                          ? `linear-gradient(135deg, rgba(0, 235, 23, ${0.15 + stepProgress * 0.15}) 0%, rgba(32, 192, 48, ${0.1 + stepProgress * 0.1}) 100%)`
-                          : "linear-gradient(135deg, rgba(43, 51, 43, 0.6) 0%, rgba(43, 65, 45, 0.4) 100%)",
-                        border: isActive
-                          ? `2px solid rgba(0, 235, 23, ${0.3 + stepProgress * 0.4})`
-                          : "2px solid rgba(43, 51, 43, 0.5)",
-                        boxShadow: isActive
-                          ? `0 0 ${20 + stepProgress * 20}px rgba(0, 235, 23, ${stepProgress * 0.4})`
-                          : "none",
+                        background: "#00EB17",
+                        color: "#0a1f0c",
+                        boxShadow:
+                          index <= nodesActive
+                            ? "0 0 15px rgba(0, 235, 23, 0.6)"
+                            : "none",
+                        opacity: index <= nodesActive ? 1 : 0.5,
                       }}
                     >
-                      <div
-                        style={{
-                          color: isActive
-                            ? `rgba(0, 235, 23, ${0.5 + stepProgress * 0.5})`
-                            : "rgba(255, 255, 255, 0.25)",
-                        }}
-                      >
-                        {step.icon}
-                      </div>
-
-                      <div
-                        className="absolute -top-1 -right-1 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
-                        style={{
-                          background:
-                            stepProgress >= 1
-                              ? "#00EB17"
-                              : "rgba(43, 51, 43, 0.6)",
-                          color:
-                            stepProgress >= 1
-                              ? "#0a1f0c"
-                              : "rgba(255, 255, 255, 0.4)",
-                        }}
-                      >
-                        {step.number}
-                      </div>
-                    </div>
-
-                    {/* Content */}
-                    <div
-                      className="pt-2 transition-all duration-300"
-                      style={{
-                        opacity: isActive ? 0.5 + stepProgress * 0.5 : 0.3,
-                      }}
-                    >
-                      <h3
-                        className="font-eb-garamond text-xl font-semibold mb-2"
-                        style={{
-                          color: isActive
-                            ? `rgba(255, 255, 255, ${0.7 + stepProgress * 0.3})`
-                            : "rgba(255, 255, 255, 0.4)",
-                        }}
-                      >
-                        {step.title}
-                      </h3>
-                      <p
-                        className="font-raleway text-sm leading-relaxed"
-                        style={{
-                          color: isActive
-                            ? `rgba(255, 255, 255, ${0.4 + stepProgress * 0.2})`
-                            : "rgba(255, 255, 255, 0.25)",
-                        }}
-                      >
-                        {step.description}
-                      </p>
+                      {step.number}
                     </div>
                   </div>
+
+                  {/* Content */}
+                  <div className="pt-2">
+                    <h3 className="font-eb-garamond text-xl font-semibold mb-2 text-white">
+                      {step.title}
+                    </h3>
+                    <p className="font-raleway text-sm leading-relaxed text-white/60">
+                      {step.description}
+                    </p>
+                  </div>
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
         </div>
       </div>

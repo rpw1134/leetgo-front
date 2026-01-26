@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { animate } from "animejs";
 
 interface FeatureCardProps {
@@ -7,6 +7,7 @@ interface FeatureCardProps {
   description: string;
   accentColor: string;
   index: number;
+  className?: string; // Added optional className prop
 }
 
 export const FeatureCard: React.FC<FeatureCardProps> = ({
@@ -15,12 +16,16 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
   description,
   accentColor,
   index,
+  className = "", // Default to empty string
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!cardRef.current) return;
 
+    {
+      /* Animation logic remains similar but simplified since we don't have the icon element anymore */
+    }
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -33,17 +38,6 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
               duration: 1000,
               delay: index * 150,
             });
-
-            const iconEl = cardRef.current.querySelector(".feature-icon");
-            if (iconEl) {
-              animate(iconEl, {
-                scale: [0, 1],
-                rotate: [180, 0],
-                ease: "outElastic(1, 0.5)",
-                duration: 1200,
-                delay: index * 150 + 300,
-              });
-            }
 
             observer.disconnect();
           }
@@ -60,46 +54,49 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
   return (
     <div
       ref={cardRef}
-      className="feature-card group relative p-8 rounded-2xl opacity-0"
+      className={`feature-card group relative p-6 rounded-2xl opacity-0 overflow-hidden min-h-70 ${className}`}
       style={{
         background: `linear-gradient(145deg, rgba(43, 65, 45, 0.6) 0%, rgba(43, 51, 43, 0.8) 100%)`,
         border: "1px solid rgba(32, 192, 48, 0.1)",
       }}
     >
-      {/* Glow effect on hover */}
+      {/* Background Graphic (Engraving) */}
       <div
-        className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-        style={{
-          background: `radial-gradient(circle at 50% 0%, ${accentColor}20 0%, transparent 70%)`,
-        }}
-      />
-
-      {/* Icon */}
-      <div
-        className="feature-icon relative w-16 h-16 rounded-xl flex items-center justify-center mb-6"
-        style={{
-          background: `linear-gradient(135deg, ${accentColor}30 0%, ${accentColor}10 100%)`,
-          border: `1px solid ${accentColor}40`,
-        }}
+        className="absolute inset-0 flex items-center justify-center opacity-[0.05] group-hover:opacity-[0.12] transition-all duration-700 ease-out pointer-events-none group-hover:scale-105"
+        style={{ color: accentColor }}
       >
-        <div className="text-3xl" style={{ color: accentColor }}>
-          {icon}
+        <div className="w-[120%] h-[120%]">
+          {React.isValidElement<{ className?: string }>(icon)
+            ? React.cloneElement(icon, {
+                className: "w-full h-full stroke-[0.5]",
+              })
+            : icon}
         </div>
       </div>
 
-      {/* Content */}
-      <h3 className="font-eb-garamond text-2xl font-semibold text-white mb-3 group-hover:text-leetgo-bright transition-colors duration-300">
-        {title}
-      </h3>
-      <p className="font-raleway text-white/60 leading-relaxed">
-        {description}
-      </p>
+      {/* Main Content */}
+      <div className="relative z-10 h-full flex flex-col justify-end">
+        <div>
+          <h3 className="font-eb-garamond text-2xl font-semibold text-white mb-3 group-hover:text-leetgo-bright transition-colors duration-300">
+            {title}
+          </h3>
+          <p className="font-raleway text-white/70 leading-relaxed text-base">
+            {description}
+          </p>
+        </div>
 
-      {/* Corner accent */}
+        {/* Subtle accent line instead of icon */}
+        <div
+          className="mt-4 w-12 h-1 rounded-full transition-all duration-300 group-hover:w-full"
+          style={{ background: accentColor, opacity: 0.5 }}
+        />
+      </div>
+
+      {/* Glow effect on hover */}
       <div
-        className="absolute top-0 right-0 w-20 h-20 opacity-20 rounded-xl"
+        className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700"
         style={{
-          background: `radial-gradient(circle at 100% 0%, ${accentColor} 0%, transparent 70%)`,
+          background: `radial-gradient(circle at 50% 50%, ${accentColor}10 0%, transparent 70%)`,
         }}
       />
     </div>

@@ -1,6 +1,9 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { addUserToWaitlist } from "../../utils/api/waitlist";
+import { GlassInput } from "../reusable/inputs/GlassInput";
+import { PrimaryButton } from "../reusable/buttons/PrimaryButton";
+import { LoadingSpinner } from "../SVGs/LoadingSpinner";
 
 interface WaitlistFormProps {
   onSubmit: (email: string) => void;
@@ -10,7 +13,7 @@ export const WaitlistForm = ({ onSubmit }: WaitlistFormProps) => {
   const [email, setEmail] = useState("");
   const [isValid, setIsValid] = useState(true);
 
-  const { mutateAsync, isPending, isError, error } = useMutation({
+  const { mutateAsync, isPending, isError, error, reset } = useMutation({
     mutationFn: addUserToWaitlist,
   });
 
@@ -26,12 +29,14 @@ export const WaitlistForm = ({ onSubmit }: WaitlistFormProps) => {
       setIsValid(false);
       return;
     }
+
     try {
       await mutateAsync(email);
       setIsValid(true);
+      onSubmit(email);
     } catch (err) {
       console.error("Failed to add user to waitlist:", err);
-      return;
+      // isError state will be handled in render
     }
   };
 
@@ -40,46 +45,50 @@ export const WaitlistForm = ({ onSubmit }: WaitlistFormProps) => {
     if (!isValid) {
       setIsValid(true);
     }
+    if (isError) {
+      reset();
+    }
   };
 
+  if (isPending) {
+    return (
+      <div className="w-full max-w-md mx-auto py-12 flex flex-col items-center justify-center space-y-4 animate-fade-in">
+        <LoadingSpinner className="w-10 h-10 text-leetgo-primary" />
+        <p className="text-white font-raleway text-lg animate-pulse">
+          Securing your spot...
+        </p>
+      </div>
+    );
+  }
+
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-md mx-auto space-y-6">
-      <div className="space-y-2">
-        <input
+    <form onSubmit={handleSubmit} className="w-full max-w-md mx-auto space-y-8">
+      <div className="relative">
+        <GlassInput
           type="email"
           value={email}
           onChange={(e) => handleEmailChange(e.target.value)}
           placeholder="Enter your email address"
-          className={`
-            w-full px-6 py-4
-            bg-leetgo-darkest/50
-            border-2 rounded-xl
-            text-white font-raleway text-lg
-            placeholder-gray-400
-            focus:outline-none focus:ring-2 focus:ring-leetgo-bright
-            transition-all duration-300
-            backdrop-blur-sm
-            ${
-              isValid
-                ? "border-leetgo-forest/50 hover:border-leetgo-primary"
-                : "border-red-500 shake-animation"
-            }
-          `}
+          isValid={isValid && !isError}
           required
         />
-        {!isValid && (
-          <p className="text-red-400 text-sm font-raleway ml-2">
-            Please enter a valid email address
-          </p>
-        )}
+        <div className="absolute top-full left-0 mt-2 w-full">
+          {!isValid && (
+            <p className="text-red-400 text-sm font-raleway ml-2 animate-shake">
+              Please enter a valid email address
+            </p>
+          )}
+          {isError && (
+            <p className="text-red-400 text-sm font-raleway ml-2 animate-shake">
+              {error instanceof Error
+                ? error.message
+                : "Something went wrong. Please try again."}
+            </p>
+          )}
+        </div>
       </div>
 
-      <button
-        type="submit"
-        className="splash-btn-primary w-full py-4 text-lg font-semibold"
-      >
-        Join the Wait List
-      </button>
+      <PrimaryButton type="submit">Join the Wait List</PrimaryButton>
     </form>
   );
 };

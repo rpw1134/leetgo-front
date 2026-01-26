@@ -41,5 +41,5 @@ This platform is educational and social, not competitive and intense.
 3. You must follow good UI and UX standards with proper visual hiearchy
 4. You will make creative choices where applicable. You will not reinvent the wheel and you will not always try to make everything unique, but you will not always be boring either. Strike a balance.
 5. You will place all SVG components in the SVGs folder.
-6. You will use the animejs library for all complex animations.
+6. You will use the animejs library for all complex animations. You can find documentation at https://animejs.com/documentation.
 7. All components will be responsive across mobile, tablet, laptoc, and desktop screen sizes.
