@@ -210,20 +210,48 @@
   animation: edgePulse 3s ease-in-out infinite;
 }
 
-.tree-edge-1 { animation-delay: 0s; }
-.tree-edge-2 { animation-delay: 0.2s; }
-.tree-edge-3 { animation-delay: 0.4s; }
-.tree-edge-4 { animation-delay: 0.6s; }
-.tree-edge-5 { animation-delay: 0.8s; }
-.tree-edge-6 { animation-delay: 1s; }
-.tree-edge-7 { animation-delay: 1.2s; }
-.tree-edge-8 { animation-delay: 1.4s; }
-.tree-edge-9 { animation-delay: 1.6s; }
-.tree-edge-10 { animation-delay: 1.8s; }
-.tree-edge-11 { animation-delay: 2s; }
-.tree-edge-12 { animation-delay: 2.2s; }
-.tree-edge-13 { animation-delay: 2.4s; }
-.tree-edge-14 { animation-delay: 2.6s; }
+.tree-edge-1 {
+  animation-delay: 0s;
+}
+.tree-edge-2 {
+  animation-delay: 0.2s;
+}
+.tree-edge-3 {
+  animation-delay: 0.4s;
+}
+.tree-edge-4 {
+  animation-delay: 0.6s;
+}
+.tree-edge-5 {
+  animation-delay: 0.8s;
+}
+.tree-edge-6 {
+  animation-delay: 1s;
+}
+.tree-edge-7 {
+  animation-delay: 1.2s;
+}
+.tree-edge-8 {
+  animation-delay: 1.4s;
+}
+.tree-edge-9 {
+  animation-delay: 1.6s;
+}
+.tree-edge-10 {
+  animation-delay: 1.8s;
+}
+.tree-edge-11 {
+  animation-delay: 2s;
+}
+.tree-edge-12 {
+  animation-delay: 2.2s;
+}
+.tree-edge-13 {
+  animation-delay: 2.4s;
+}
+.tree-edge-14 {
+  animation-delay: 2.6s;
+}
 
 .tree-node-root {
   animation: nodePulse 2s ease-in-out infinite;
@@ -252,19 +280,45 @@
   animation: edgePulse 3s ease-in-out infinite;
 }
 
-.graph-edge-1 { animation-delay: 0s; }
-.graph-edge-2 { animation-delay: 0.25s; }
-.graph-edge-3 { animation-delay: 0.5s; }
-.graph-edge-4 { animation-delay: 0.75s; }
-.graph-edge-5 { animation-delay: 1s; }
-.graph-edge-6 { animation-delay: 1.25s; }
-.graph-edge-7 { animation-delay: 1.5s; }
-.graph-edge-8 { animation-delay: 1.75s; }
-.graph-edge-9 { animation-delay: 2s; }
-.graph-edge-10 { animation-delay: 2.25s; }
-.graph-edge-11 { animation-delay: 2.5s; }
-.graph-edge-12 { animation-delay: 2.75s; }
-.graph-edge-13 { animation-delay: 3s; }
+.graph-edge-1 {
+  animation-delay: 0s;
+}
+.graph-edge-2 {
+  animation-delay: 0.25s;
+}
+.graph-edge-3 {
+  animation-delay: 0.5s;
+}
+.graph-edge-4 {
+  animation-delay: 0.75s;
+}
+.graph-edge-5 {
+  animation-delay: 1s;
+}
+.graph-edge-6 {
+  animation-delay: 1.25s;
+}
+.graph-edge-7 {
+  animation-delay: 1.5s;
+}
+.graph-edge-8 {
+  animation-delay: 1.75s;
+}
+.graph-edge-9 {
+  animation-delay: 2s;
+}
+.graph-edge-10 {
+  animation-delay: 2.25s;
+}
+.graph-edge-11 {
+  animation-delay: 2.5s;
+}
+.graph-edge-12 {
+  animation-delay: 2.75s;
+}
+.graph-edge-13 {
+  animation-delay: 3s;
+}
 
 .graph-node-center {
   animation: nodePulse 2.5s ease-in-out infinite;
@@ -289,10 +343,18 @@
   animation: arrowFlow 2s ease-in-out infinite;
 }
 
-.list-arrow-1 { animation-delay: 0s; }
-.list-arrow-2 { animation-delay: 0.3s; }
-.list-arrow-3 { animation-delay: 0.6s; }
-.list-arrow-4 { animation-delay: 0.9s; }
+.list-arrow-1 {
+  animation-delay: 0s;
+}
+.list-arrow-2 {
+  animation-delay: 0.3s;
+}
+.list-arrow-3 {
+  animation-delay: 0.6s;
+}
+.list-arrow-4 {
+  animation-delay: 0.9s;
+}
 
 .list-node-head {
   animation: nodePulse 2s ease-in-out infinite;
