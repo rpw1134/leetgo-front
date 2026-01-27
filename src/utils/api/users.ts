@@ -1,9 +1,14 @@
 import axios from "axios";
+import type { CreateUserParams } from "../../types/auth";
+import { axiosClient } from "../constants";
 
-async function createUser(email: string, password: string): Promise<void> {
+async function createUser({
+  email,
+  password,
+}: CreateUserParams): Promise<void> {
   try {
-    const res = await axios.post(
-      "/api/users",
+    const res = await axiosClient.post(
+      "/auth/signup",
       { email, password },
       { headers: { "Content-Type": "application/json" } },
     );

@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const SIGNUP_EMAIL_HTML = `
 <!DOCTYPE html>
 <html lang="en">
@@ -94,4 +96,9 @@ const SIGNUP_EMAIL_HTML = `
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
 
-export { API_URL, SIGNUP_EMAIL_HTML };
+const axiosClient = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8000/api",
+  withCredentials: true,
+});
+
+export { API_URL, SIGNUP_EMAIL_HTML, axiosClient };

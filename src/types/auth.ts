@@ -18,3 +18,8 @@ export interface SignupCredentials {
   email: string;
   password: string;
 }
+
+export interface CreateUserParams {
+  email: string;
+  password: string;
+}

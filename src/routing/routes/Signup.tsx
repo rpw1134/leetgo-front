@@ -5,27 +5,26 @@ import { BinaryTreeSVG } from "../../components/SVGs/BinaryTreeSVG";
 import { GraphSVG } from "../../components/SVGs/GraphSVG";
 import { LinkedListSVG } from "../../components/SVGs/LinkedListSVG";
 import { GridOverlay } from "../../components/reusable/backgrounds/GridOverlay";
+import { useMutation } from "@tanstack/react-query";
+import { createUser } from "../../utils/api/users";
 
 export const Signup: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+
+  const { mutateAsync, isPending, isError, error, reset } = useMutation({
+    mutationFn: createUser,
+  });
 
   const handleSignup = async (email: string, password: string) => {
     setIsLoading(true);
     setServerError(null);
 
     try {
-      // TODO: Implement actual signup API call
-      console.log("Signing up with:", { email, password });
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // On success, redirect to dashboard or verification page
-      // navigate('/verify-email');
+      await mutateAsync({ email, password });
     } catch (error) {
       setServerError(
-        error instanceof Error ? error.message : "Failed to create account"
+        error instanceof Error ? error.message : "Failed to create account",
       );
     } finally {
       setIsLoading(false);

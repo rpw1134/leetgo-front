@@ -1,10 +1,10 @@
-import { API_URL } from "../constants";
+import { axiosClient } from "../constants";
 import axios from "axios";
 
 async function addUserToWaitlist(email: string): Promise<void> {
   try {
-    const response = await axios.post(
-      `${API_URL}/waitlist`,
+    const response = await axiosClient.post(
+      `/waitlist`,
       { email },
       {
         headers: {
