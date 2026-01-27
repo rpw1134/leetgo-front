@@ -23,3 +23,8 @@ export interface CreateUserParams {
   email: string;
   password: string;
 }
+
+export interface UserLoginParams {
+  email: string;
+  password: string;
+}

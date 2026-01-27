@@ -2,24 +2,22 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { LoginForm } from "../../components/login/LoginForm";
 import { GridOverlay } from "../../components/reusable/backgrounds/GridOverlay";
+import { useMutation } from "@tanstack/react-query";
+import { loginUser } from "../../utils/api/users";
 
 export const Login: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const { mutateAsync, isPending, isError, error, reset } = useMutation({
+    mutationFn: loginUser,
+  });
 
   const handleLogin = async (email: string, password: string) => {
     setIsLoading(true);
     setServerError(null);
 
     try {
-      // TODO: Implement actual login API call
-      console.log("Logging in with:", { email, password });
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // On success, redirect to dashboard
-      // navigate('/dashboard');
+      await mutateAsync({ email, password });
     } catch (error) {
       setServerError(
         error instanceof Error ? error.message : "Invalid email or password",
