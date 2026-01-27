@@ -5,6 +5,7 @@ import { Signup } from "./routes/Signup";
 import { Waitlist } from "./routes/Waitlist";
 import { Root } from "./routes/Root";
 import Sandbox from "./routes/Sandbox";
+import { Login } from "./routes/Login";
 
 export const router = createBrowserRouter([
   {
@@ -19,6 +20,10 @@ export const router = createBrowserRouter([
       {
         path: "signup",
         element: <Signup />,
+      },
+      {
+        path: "login",
+        element: <Login />,
       },
       {
         path: "waitlist",
