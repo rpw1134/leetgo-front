@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LoginForm } from "../../components/login/LoginForm";
 import { GridOverlay } from "../../components/reusable/backgrounds/GridOverlay";
 import { useMutation } from "@tanstack/react-query";
@@ -10,12 +10,14 @@ export const Login: React.FC = () => {
   const { mutateAsync, isPending } = useMutation({
     mutationFn: loginUser,
   });
+  const navigate = useNavigate();
 
   const handleLogin = async (email: string, password: string) => {
     setServerError(null);
 
     try {
       await mutateAsync({ email, password });
+      navigate("/sandbox");
     } catch (error) {
       setServerError(
         error instanceof Error ? error.message : "Invalid email or password",

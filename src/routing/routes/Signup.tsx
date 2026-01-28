@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { SignupHeader } from "../../components/signup/SignupHeader";
 import { SignupForm } from "../../components/signup/SignupForm";
+import { EmailVerificationSent } from "../../components/signup/EmailVerificationSent";
 import { BinaryTreeSVG } from "../../components/SVGs/BinaryTreeSVG";
 import { GraphSVG } from "../../components/SVGs/GraphSVG";
 import { LinkedListSVG } from "../../components/SVGs/LinkedListSVG";
@@ -8,22 +9,39 @@ import { GridOverlay } from "../../components/reusable/backgrounds/GridOverlay";
 import { useMutation } from "@tanstack/react-query";
 import { createUser } from "../../utils/api/users";
 
+interface SignupState {
+  email: string;
+  isVerificationSent: boolean;
+  serverError: string | null;
+}
+
 export const Signup: React.FC = () => {
-  const [serverError, setServerError] = useState<string | null>(null);
+  const [state, setState] = useState<SignupState>({
+    email: "",
+    isVerificationSent: false,
+    serverError: null,
+  });
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: createUser,
   });
 
   const handleSignup = async (email: string, password: string) => {
-    setServerError(null);
+    setState((prev) => ({ ...prev, serverError: null }));
 
     try {
       await mutateAsync({ email, password });
+      setState({
+        email,
+        isVerificationSent: true,
+        serverError: null,
+      });
     } catch (error) {
-      setServerError(
-        error instanceof Error ? error.message : "Failed to create account",
-      );
+      setState((prev) => ({
+        ...prev,
+        serverError:
+          error instanceof Error ? error.message : "Failed to create account",
+      }));
     }
   };
 
@@ -57,31 +75,39 @@ export const Signup: React.FC = () => {
         <div className="w-full max-w-md mx-auto">
           {/* Glass card container */}
           <div className="signup-card p-8 md:p-10 rounded-2xl">
-            <SignupHeader />
-            <SignupForm
-              onSubmit={handleSignup}
-              isLoading={isPending}
-              serverError={serverError}
-            />
+            {state.isVerificationSent ? (
+              <EmailVerificationSent email={state.email} />
+            ) : (
+              <>
+                <SignupHeader />
+                <SignupForm
+                  onSubmit={handleSignup}
+                  isLoading={isPending}
+                  serverError={state.serverError}
+                />
+              </>
+            )}
           </div>
 
-          {/* Footer link */}
-          <p className="mt-8 text-center text-white/30 text-xs font-raleway">
-            By signing up, you agree to our{" "}
-            <a
-              href="/terms"
-              className="text-leetgo-bright/60 hover:text-leetgo-bright transition-colors"
-            >
-              Terms of Service
-            </a>{" "}
-            and{" "}
-            <a
-              href="/privacy"
-              className="text-leetgo-bright/60 hover:text-leetgo-bright transition-colors"
-            >
-              Privacy Policy
-            </a>
-          </p>
+          {/* Footer link - only show during signup */}
+          {!state.isVerificationSent && (
+            <p className="mt-8 text-center text-white/30 text-xs font-raleway">
+              By signing up, you agree to our{" "}
+              <a
+                href="/terms"
+                className="text-leetgo-bright/60 hover:text-leetgo-bright transition-colors"
+              >
+                Terms of Service
+              </a>{" "}
+              and{" "}
+              <a
+                href="/privacy"
+                className="text-leetgo-bright/60 hover:text-leetgo-bright transition-colors"
+              >
+                Privacy Policy
+              </a>
+            </p>
+          )}
         </div>
       </div>
 

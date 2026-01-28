@@ -6,6 +6,7 @@ import { Waitlist } from "./routes/Waitlist";
 import { Root } from "./routes/Root";
 import Sandbox from "./routes/Sandbox";
 import { Login } from "./routes/Login";
+import SignupCallback from "./routes/SignupCallback";
 
 export const router = createBrowserRouter([
   {
@@ -32,6 +33,10 @@ export const router = createBrowserRouter([
       {
         path: "sandbox",
         element: <Sandbox />,
+      },
+      {
+        path: "verification-success",
+        element: <SignupCallback />,
       },
       {
         path: "*",
