@@ -3,20 +3,21 @@ import { Link, useNavigate } from "react-router-dom";
 import { LoginForm } from "../../components/login/LoginForm";
 import { GridOverlay } from "../../components/reusable/backgrounds/GridOverlay";
 import { useMutation } from "@tanstack/react-query";
-import { loginUser } from "../../utils/api/users";
+import { loginUser, loginUserWithOAuth } from "../../utils/api/users";
 
 export const Login: React.FC = () => {
   const [serverError, setServerError] = useState<string | null>(null);
-  const { mutateAsync, isPending } = useMutation({
+  const emailMutation = useMutation({
     mutationFn: loginUser,
   });
+
   const navigate = useNavigate();
 
   const handleLogin = async (email: string, password: string) => {
     setServerError(null);
 
     try {
-      await mutateAsync({ email, password });
+      await emailMutation.mutateAsync({ email, password });
       navigate("/sandbox");
     } catch (error) {
       setServerError(
@@ -26,13 +27,11 @@ export const Login: React.FC = () => {
   };
 
   const handleGoogleLogin = () => {
-    // TODO: Implement Google OAuth
-    console.log("Google login clicked");
+    loginUserWithOAuth("google");
   };
 
   const handleGithubLogin = () => {
-    // TODO: Implement GitHub OAuth
-    console.log("GitHub login clicked");
+    loginUserWithOAuth("github");
   };
 
   return (
@@ -69,7 +68,7 @@ export const Login: React.FC = () => {
               onSubmit={handleLogin}
               onGoogleLogin={handleGoogleLogin}
               onGithubLogin={handleGithubLogin}
-              isLoading={isPending}
+              isLoading={emailMutation.isPending}
               serverError={serverError}
             />
           </div>

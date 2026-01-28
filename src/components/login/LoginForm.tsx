@@ -59,8 +59,16 @@ export const LoginForm = ({
     <div className="w-full space-y-6">
       {/* OAuth Buttons */}
       <div className="space-y-3">
-        <OAuthButton provider="google" onClick={onGoogleLogin} disabled={isLoading} />
-        <OAuthButton provider="github" onClick={onGithubLogin} disabled={isLoading} />
+        <OAuthButton
+          provider="google"
+          onClick={onGoogleLogin}
+          disabled={isLoading}
+        />
+        <OAuthButton
+          provider="github"
+          onClick={onGithubLogin}
+          disabled={isLoading}
+        />
       </div>
 
       {/* Divider */}

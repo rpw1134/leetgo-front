@@ -42,7 +42,9 @@ export const SignupForm = ({
     passwordConfirmation: false,
   });
 
-  const passwordStrength: PasswordStrength = getPasswordStrength(formData.password);
+  const passwordStrength: PasswordStrength = getPasswordStrength(
+    formData.password,
+  );
 
   const updateField = useCallback(
     (field: keyof SignupFormData, value: string) => {
@@ -53,7 +55,7 @@ export const SignupForm = ({
         setErrors((prev) => ({ ...prev, [field]: null }));
       }
     },
-    [errors]
+    [errors],
   );
 
   const handleBlur = useCallback((field: keyof SignupFormData) => {
@@ -72,7 +74,7 @@ export const SignupForm = ({
         case "passwordConfirmation":
           validationResult = validatePasswordConfirmation(
             current.password,
-            current.passwordConfirmation
+            current.passwordConfirmation,
           );
           break;
       }
@@ -88,7 +90,7 @@ export const SignupForm = ({
     const passwordResult = validatePassword(formData.password);
     const confirmResult = validatePasswordConfirmation(
       formData.password,
-      formData.passwordConfirmation
+      formData.passwordConfirmation,
     );
 
     const newErrors: SignupFormErrors = {
@@ -100,7 +102,9 @@ export const SignupForm = ({
     setErrors(newErrors);
     setTouched({ email: true, password: true, passwordConfirmation: true });
 
-    return emailResult.isValid && passwordResult.isValid && confirmResult.isValid;
+    return (
+      emailResult.isValid && passwordResult.isValid && confirmResult.isValid
+    );
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -182,7 +186,9 @@ export const SignupForm = ({
           onChange={(e) => updateField("passwordConfirmation", e.target.value)}
           onBlur={() => handleBlur("passwordConfirmation")}
           placeholder="Confirm your password"
-          isValid={!errors.passwordConfirmation || !touched.passwordConfirmation}
+          isValid={
+            !errors.passwordConfirmation || !touched.passwordConfirmation
+          }
           autoComplete="new-password"
         />
         {errors.passwordConfirmation && touched.passwordConfirmation && (

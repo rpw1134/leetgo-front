@@ -1,6 +1,6 @@
 import axios from "axios";
 import type { CreateUserParams, UserLoginParams } from "../../types/auth";
-import { axiosClient } from "../constants";
+import { axiosClient, API_URL } from "../constants";
 
 async function createUser({
   email,
@@ -22,7 +22,7 @@ async function createUser({
   }
 }
 
-async function loginUser({email, password}: UserLoginParams): Promise<void> {
+async function loginUser({ email, password }: UserLoginParams): Promise<void> {
   try {
     const res = await axiosClient.post(
       "/auth/login",
@@ -39,4 +39,9 @@ async function loginUser({email, password}: UserLoginParams): Promise<void> {
   }
 }
 
-export { createUser, loginUser };
+function loginUserWithOAuth(provider: "google" | "github"): void {
+  // OAuth requires full page redirect, not AJAX call
+  window.location.href = `${API_URL}/auth/login/${provider}`;
+}
+
+export { createUser, loginUser, loginUserWithOAuth };
