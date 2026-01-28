@@ -6,14 +6,12 @@ import { useMutation } from "@tanstack/react-query";
 import { loginUser } from "../../utils/api/users";
 
 export const Login: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
-  const { mutateAsync, isPending, isError, error, reset } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: loginUser,
   });
 
   const handleLogin = async (email: string, password: string) => {
-    setIsLoading(true);
     setServerError(null);
 
     try {
@@ -22,8 +20,6 @@ export const Login: React.FC = () => {
       setServerError(
         error instanceof Error ? error.message : "Invalid email or password",
       );
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -71,7 +67,7 @@ export const Login: React.FC = () => {
               onSubmit={handleLogin}
               onGoogleLogin={handleGoogleLogin}
               onGithubLogin={handleGithubLogin}
-              isLoading={isLoading}
+              isLoading={isPending}
               serverError={serverError}
             />
           </div>
@@ -79,7 +75,7 @@ export const Login: React.FC = () => {
       </div>
 
       {/* Subtle accent line at top */}
-      <div className="fixed top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-leetgo-bright/20 to-transparent" />
+      <div className="fixed top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-leetgo-bright/20 to-transparent" />
     </div>
   );
 };

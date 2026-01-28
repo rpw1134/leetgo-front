@@ -69,10 +69,10 @@ export const LoginForm = ({
       {/* Email/Password Form */}
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Email Field */}
-        <div className="space-y-1">
+        <div className="relative">
           <label
             htmlFor="login-email"
-            className="block text-sm font-raleway text-slate-500 ml-1"
+            className="block text-sm font-raleway text-slate-500 ml-1 mb-1"
           >
             Email
           </label>
@@ -88,15 +88,15 @@ export const LoginForm = ({
             className="!bg-slate-800/50 !border-slate-700/50 hover:!border-slate-600 focus:!ring-leetgo-bright/50"
           />
           {emailError && touched.email && (
-            <p className="text-red-400 text-sm font-raleway ml-1 animate-fade-in">
+            <p className="absolute top-full left-0 mt-1 text-red-400 text-xs font-raleway ml-2 animate-fade-in">
               {emailError}
             </p>
           )}
         </div>
 
         {/* Password Field */}
-        <div className="space-y-1">
-          <div className="flex justify-between items-center">
+        <div className="relative">
+          <div className="flex justify-between items-center mb-1">
             <label
               htmlFor="login-password"
               className="block text-sm font-raleway text-slate-500 ml-1"
@@ -122,7 +122,7 @@ export const LoginForm = ({
             className="!bg-slate-800/50 !border-slate-700/50 hover:!border-slate-600 focus:!ring-leetgo-bright/50"
           />
           {!password && touched.password && (
-            <p className="text-red-400 text-sm font-raleway ml-1 animate-fade-in">
+            <p className="absolute top-full left-0 mt-1 text-red-400 text-xs font-raleway ml-2 animate-fade-in">
               Password is required
             </p>
           )}
@@ -130,7 +130,7 @@ export const LoginForm = ({
 
         {/* Server Error */}
         {serverError && (
-          <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30">
+          <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30 animate-fade-in">
             <p className="text-red-400 text-sm font-raleway text-center">
               {serverError}
             </p>

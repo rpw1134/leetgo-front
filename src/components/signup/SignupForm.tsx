@@ -114,10 +114,10 @@ export const SignupForm = ({
   return (
     <form onSubmit={handleSubmit} className="w-full space-y-6">
       {/* Email Field */}
-      <div className="space-y-1">
+      <div className="relative">
         <label
           htmlFor="email"
-          className="block text-sm font-raleway text-white/70 ml-1"
+          className="block text-sm font-raleway text-white/70 ml-1 mb-1"
         >
           Email
         </label>
@@ -132,17 +132,17 @@ export const SignupForm = ({
           autoComplete="email"
         />
         {errors.email && touched.email && (
-          <p className="text-red-400 text-sm font-raleway ml-1 animate-fade-in">
+          <p className="absolute top-full left-0 mt-1 text-red-400 text-xs font-raleway ml-2 animate-fade-in">
             {errors.email}
           </p>
         )}
       </div>
 
       {/* Password Field */}
-      <div className="space-y-1">
+      <div className="relative">
         <label
           htmlFor="password"
-          className="block text-sm font-raleway text-white/70 ml-1"
+          className="block text-sm font-raleway text-white/70 ml-1 mb-1"
         >
           Password
         </label>
@@ -161,17 +161,17 @@ export const SignupForm = ({
           show={formData.password.length > 0}
         />
         {errors.password && touched.password && (
-          <p className="text-red-400 text-sm font-raleway ml-1 animate-fade-in">
+          <p className="absolute top-full left-0 mt-1 text-red-400 text-xs font-raleway ml-2 animate-fade-in">
             {errors.password}
           </p>
         )}
       </div>
 
       {/* Confirm Password Field */}
-      <div className="space-y-1">
+      <div className="relative">
         <label
           htmlFor="passwordConfirmation"
-          className="block text-sm font-raleway text-white/70 ml-1"
+          className="block text-sm font-raleway text-white/70 ml-1 mb-1"
         >
           Confirm Password
         </label>
@@ -186,7 +186,7 @@ export const SignupForm = ({
           autoComplete="new-password"
         />
         {errors.passwordConfirmation && touched.passwordConfirmation && (
-          <p className="text-red-400 text-sm font-raleway ml-1 animate-fade-in">
+          <p className="absolute top-full left-0 mt-1 text-red-400 text-xs font-raleway ml-2 animate-fade-in">
             {errors.passwordConfirmation}
           </p>
         )}
@@ -194,7 +194,7 @@ export const SignupForm = ({
 
       {/* Server Error */}
       {serverError && (
-        <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30">
+        <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30 animate-fade-in">
           <p className="text-red-400 text-sm font-raleway text-center">
             {serverError}
           </p>

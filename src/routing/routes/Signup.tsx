@@ -9,15 +9,13 @@ import { useMutation } from "@tanstack/react-query";
 import { createUser } from "../../utils/api/users";
 
 export const Signup: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
 
-  const { mutateAsync, isPending, isError, error, reset } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: createUser,
   });
 
   const handleSignup = async (email: string, password: string) => {
-    setIsLoading(true);
     setServerError(null);
 
     try {
@@ -26,8 +24,6 @@ export const Signup: React.FC = () => {
       setServerError(
         error instanceof Error ? error.message : "Failed to create account",
       );
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -64,7 +60,7 @@ export const Signup: React.FC = () => {
             <SignupHeader />
             <SignupForm
               onSubmit={handleSignup}
-              isLoading={isLoading}
+              isLoading={isPending}
               serverError={serverError}
             />
           </div>
