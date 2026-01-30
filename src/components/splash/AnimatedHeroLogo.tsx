@@ -37,8 +37,8 @@ export const AnimatedHeroLogo: React.FC = () => {
       // Left ear: rotate counter-clockwise so < tip points upper-left (10 o'clock)
       animate(leftBracketRef.current!, {
         rotate: [0, 45],
-        translateX: [0, -10],
-        translateY: [50, -15],
+        translateX: [0, -80],
+        translateY: [0, -80],
         duration: 700,
         ease: "outBack",
       });
@@ -46,8 +46,8 @@ export const AnimatedHeroLogo: React.FC = () => {
       // Right ear: rotate clockwise so > tip points upper-right (2 o'clock)
       animate(rightBracketRef.current!, {
         rotate: [0, -45],
-        translateX: [0, 10],
-        translateY: [50, -15],
+        translateX: [0, 80],
+        translateY: [0, -80],
         duration: 700,
         ease: "outBack",
       });
@@ -154,12 +154,12 @@ export const AnimatedHeroLogo: React.FC = () => {
         {/* Ears row - at the top */}
         <div
           className="flex justify-center items-end"
-          style={{ marginBottom: "-0.35em" }}
+          style={{ marginBottom: "-9rem" }}
         >
           {/* Left ear */}
           <span
             ref={leftBracketRef}
-            className="font-eb-garamond text-6xl md:text-7xl lg:text-[8rem] font-light text-leetgo-bright inline-block"
+            className="font-eb-garamond text-6xl md:text-7xl lg:text-[10rem] font-light text-leetgo-bright inline-block"
             style={{
               transformOrigin: "bottom right",
             }}
@@ -173,7 +173,7 @@ export const AnimatedHeroLogo: React.FC = () => {
           {/* Right ear */}
           <span
             ref={rightBracketRef}
-            className="font-eb-garamond text-6xl md:text-7xl lg:text-[8rem] font-light text-leetgo-bright inline-block"
+            className="font-eb-garamond text-6xl md:text-7xl lg:text-[10rem] font-light text-leetgo-bright inline-block"
             style={{
               transformOrigin: "bottom left",
             }}

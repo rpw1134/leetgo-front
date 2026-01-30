@@ -61,7 +61,7 @@ export const HeroSection: React.FC = () => {
       {/* Main content */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-8">
         {/* Top tagline - left aligned */}
-        <div className="ml-2 mb-8 md:mb-12">
+        <div className="ml-2 mb-12 hidden lg:block ">
           <div className="flex flex-wrap gap-x-4 text-white/40 text-sm md:text-base tracking-widest uppercase">
             <span>AI-Powered</span>
             <span>Algorithms</span>
