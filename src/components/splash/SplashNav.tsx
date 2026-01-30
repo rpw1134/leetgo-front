@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { animate, stagger } from "animejs";
+import { LeetGoCatLogo } from "../SVGs/LeetGoCatLogo";
 
 export const SplashNav: React.FC = () => {
   const navRef = useRef<HTMLElement>(null);
@@ -36,11 +37,7 @@ export const SplashNav: React.FC = () => {
       }}
     >
       <div className="flex items-center gap-2">
-        <div className="w-10 h-10 rounded-lg bg-linear-to-br from-leetgo-bright to-leetgo-primary flex items-center justify-center">
-          <span className="font-eb-garamond text-xl font-bold text-leetgo-darkest">
-            &lt;/&gt;
-          </span>
-        </div>
+        <LeetGoCatLogo size="md" showEyes={true} />
         <span className="font-eb-garamond text-2xl font-semibold tracking-tight text-white">
           Leet<span className="text-leetgo-bright">Go</span>
         </span>

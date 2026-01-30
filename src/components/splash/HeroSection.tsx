@@ -1,4 +1,4 @@
-import { HeroLogo } from "./HeroLogo";
+import { AnimatedHeroLogo } from "./AnimatedHeroLogo";
 import { ProblemCard } from "./ProblemCard";
 import { useNavigate } from "react-router-dom";
 import { GridOverlay } from "../reusable/backgrounds/GridOverlay";
@@ -71,7 +71,7 @@ export const HeroSection: React.FC = () => {
 
         {/* Center logo and brand */}
         <div className="flex flex-col items-center mb-8 md:mb-12">
-          <HeroLogo />
+          <AnimatedHeroLogo />
           <h1 className="font-eb-garamond text-5xl md:text-6xl lg:text-7xl font-medium text-white mt-6">
             Leet<span className="text-leetgo-bright">Go</span>
           </h1>

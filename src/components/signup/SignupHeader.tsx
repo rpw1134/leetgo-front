@@ -1,22 +1,15 @@
 import { Link } from "react-router-dom";
+import { LeetGoCatLogo } from "../SVGs/LeetGoCatLogo";
 
 export const SignupHeader = () => {
   return (
     <div className="text-center mb-8">
       {/* Logo / Brand */}
       <Link to="/" className="inline-block mb-6 group">
-        <div className="flex items-center justify-center gap-1">
-          <span className="font-eb-garamond text-4xl md:text-5xl font-light text-leetgo-bright group-hover:text-white transition-colors">
-            &lt;
-          </span>
-          <span className="font-eb-garamond text-4xl md:text-5xl font-light text-white">
-            /
-          </span>
-          <span className="font-eb-garamond text-4xl md:text-5xl font-light text-leetgo-bright group-hover:text-white transition-colors">
-            &gt;
-          </span>
+        <div className="flex items-center justify-center">
+          <LeetGoCatLogo size="lg" showEyes={true} className="mx-auto" />
         </div>
-        <h1 className="font-eb-garamond text-2xl md:text-3xl font-medium text-white mt-2">
+        <h1 className="font-eb-garamond text-2xl md:text-3xl font-medium text-white mt-4">
           Leet<span className="text-leetgo-bright">Go</span>
         </h1>
       </Link>

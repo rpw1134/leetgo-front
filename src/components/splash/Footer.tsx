@@ -1,3 +1,5 @@
+import { LeetGoCatLogo } from "../SVGs/LeetGoCatLogo";
+
 export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
@@ -17,15 +19,10 @@ export const Footer: React.FC = () => {
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-12 mb-16">
           {/* Left: Brand & Tagline */}
           <div className="max-w-sm">
-            <div className="flex items-center gap-2 mb-4">
-              <span className="font-eb-garamond text-3xl font-medium text-white">
-                &lt;
-              </span>
+            <div className="flex items-center gap-3 mb-4">
+              <LeetGoCatLogo size="md" showEyes={true} />
               <span className="font-eb-garamond text-3xl font-medium text-white">
                 Leet<span className="text-leetgo-bright">Go</span>
-              </span>
-              <span className="font-eb-garamond text-3xl font-medium text-white">
-                /&gt;
               </span>
             </div>
             <p className="font-raleway text-white/40 text-sm leading-relaxed mb-6">
