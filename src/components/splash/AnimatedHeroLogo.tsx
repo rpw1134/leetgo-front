@@ -10,6 +10,16 @@ export const AnimatedHeroLogo: React.FC = () => {
   const rightEyeRef = useRef<HTMLSpanElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
   const [animationComplete, setAnimationComplete] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -35,10 +45,16 @@ export const AnimatedHeroLogo: React.FC = () => {
 
       // Phase 2: Brackets tilt to become ears pointing outward (10 and 2 o'clock)
       // Left ear: rotate counter-clockwise so < tip points upper-left (10 o'clock)
+      const getTranslation = () => {
+        if (windowWidth > 1024) return 80;
+        if (windowWidth > 768) return 60;
+        return 40;
+      };
+      const translation = getTranslation();
       animate(leftBracketRef.current!, {
         rotate: [0, 45],
-        translateX: [0, -80],
-        translateY: [0, -80],
+        translateX: [0, -translation],
+        translateY: [0, -translation],
         duration: 700,
         ease: "outBack",
       });
@@ -46,8 +62,8 @@ export const AnimatedHeroLogo: React.FC = () => {
       // Right ear: rotate clockwise so > tip points upper-right (2 o'clock)
       animate(rightBracketRef.current!, {
         rotate: [0, -45],
-        translateX: [0, 80],
-        translateY: [0, -80],
+        translateX: [0, translation],
+        translateY: [0, -translation],
         duration: 700,
         ease: "outBack",
       });
@@ -152,10 +168,7 @@ export const AnimatedHeroLogo: React.FC = () => {
       {/* Logo container - cat face layout */}
       <div className="relative flex flex-col items-center">
         {/* Ears row - at the top */}
-        <div
-          className="flex justify-center items-end"
-          style={{ marginBottom: "-9rem" }}
-        >
+        <div className="flex justify-center items-end -mb-15 md:-mb-20 lg:-mb-36">
           {/* Left ear */}
           <span
             ref={leftBracketRef}
@@ -220,12 +233,12 @@ export const AnimatedHeroLogo: React.FC = () => {
         </div>
       </div>
 
-      {/* Whisker hints - subtle decorative lines that appear after animation */}
+      {/* Whisker hints - subtle decorative lines that appear after animation (lg only) */}
       {animationComplete && (
-        <div className="absolute inset-0 pointer-events-none opacity-20">
+        <div className="absolute inset-0 pointer-events-none opacity-20 hidden lg:block">
           {/* Left whiskers */}
           <div
-            className="absolute hidden lg:block"
+            className="absolute"
             style={{
               left: "5%",
               top: "65%",
@@ -237,7 +250,7 @@ export const AnimatedHeroLogo: React.FC = () => {
             }}
           />
           <div
-            className="absolute hidden lg:block"
+            className="absolute"
             style={{
               left: "5%",
               top: "70%",
@@ -250,7 +263,7 @@ export const AnimatedHeroLogo: React.FC = () => {
           />
           {/* Right whiskers */}
           <div
-            className="absolute hidden lg:block"
+            className="absolute"
             style={{
               right: "5%",
               top: "65%",
@@ -262,7 +275,7 @@ export const AnimatedHeroLogo: React.FC = () => {
             }}
           />
           <div
-            className="absolute hidden lg:block"
+            className="absolute"
             style={{
               right: "5%",
               top: "70%",
