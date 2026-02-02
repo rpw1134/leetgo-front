@@ -1,5 +1,10 @@
 import axios from "axios";
 import type { CreateUserParams, UserLoginParams } from "../../types/auth";
+import {
+  type User,
+  type UserApiResponse,
+  mapApiResponseToUser,
+} from "../../types/user";
 import { axiosClient, API_URL } from "../constants";
 
 async function createUser({
@@ -22,14 +27,17 @@ async function createUser({
   }
 }
 
-async function loginUser({ email, password }: UserLoginParams): Promise<void> {
+async function loginUser({
+  email,
+  password,
+}: UserLoginParams): Promise<User | void> {
   try {
     const res = await axiosClient.post(
       "/auth/login",
       { email, password },
       { headers: { "Content-Type": "application/json" } },
     );
-    return res.data;
+    return mapApiResponseToUser(res.data);
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
       const errorMessage =
@@ -44,4 +52,9 @@ function loginUserWithOAuth(provider: "google" | "github"): void {
   window.location.href = `${API_URL}/auth/login/${provider}`;
 }
 
-export { createUser, loginUser, loginUserWithOAuth };
+async function fetchCurrentUser(): Promise<User> {
+  const res = await axiosClient.get<UserApiResponse>("/auth/user");
+  return mapApiResponseToUser(res.data);
+}
+
+export { createUser, loginUser, loginUserWithOAuth, fetchCurrentUser };

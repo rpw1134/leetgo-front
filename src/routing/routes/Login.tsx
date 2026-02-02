@@ -4,21 +4,30 @@ import { LoginForm } from "../../components/login/LoginForm";
 import { GridOverlay } from "../../components/reusable/backgrounds/GridOverlay";
 import { useMutation } from "@tanstack/react-query";
 import { loginUser, loginUserWithOAuth } from "../../utils/api/users";
+import useUserContext from "../../customHooks/useUserContext";
+import type { User } from "../../types/user";
+import type { UserLoginParams } from "../../types/auth";
 
 export const Login: React.FC = () => {
   const [serverError, setServerError] = useState<string | null>(null);
-  const emailMutation = useMutation({
+  const emailMutation = useMutation<User | void, Error, UserLoginParams>({
     mutationFn: loginUser,
   });
-
+  const { setUser } = useUserContext();
   const navigate = useNavigate();
 
   const handleLogin = async (email: string, password: string) => {
     setServerError(null);
 
     try {
-      await emailMutation.mutateAsync({ email, password });
-      navigate("/sandbox");
+      const user: User | void = await emailMutation.mutateAsync({
+        email,
+        password,
+      });
+      if (user) {
+        setUser(user);
+        navigate("/profile");
+      }
     } catch (error) {
       setServerError(
         error instanceof Error ? error.message : "Invalid email or password",

@@ -1,11 +1,14 @@
 import { createContext } from "react";
 import type { User } from "../types/user";
 
-const userContext = createContext<User>({
-  email: null,
-  username: null,
-  pfpUrl: null,
-  paidTier: "free",
+export interface UserContextType {
+  user: User | null;
+  setUser: (user: User | null) => void;
+}
+
+const userContext = createContext<UserContextType>({
+  user: null,
+  setUser: () => {},
 });
 
 export { userContext };

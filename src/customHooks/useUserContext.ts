@@ -1,8 +1,7 @@
 import { useContext } from "react";
-import type { User } from "../types/user";
-import { userContext } from "../context/userContext";
+import { userContext, type UserContextType } from "../context/userContext";
 
-export default function useUserContext(): User {
-  const { email, username, pfpUrl, paidTier } = useContext(userContext);
-  return { email, username, pfpUrl, paidTier };
+export default function useUserContext(): UserContextType {
+  const { user, setUser } = useContext(userContext);
+  return { user, setUser };
 }
