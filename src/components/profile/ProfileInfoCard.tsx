@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import type { User } from "../../types/user";
 import { ProfileAvatar } from "./ProfileAvatar";
@@ -11,6 +11,11 @@ interface ProfileInfoCardProps {
   onUserUpdate: (updates: Partial<User>) => void;
 }
 
+type SuccessMessage = {
+  type: "username" | "avatar";
+  message: string;
+} | null;
+
 export const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
   user,
   onUserUpdate,
@@ -18,6 +23,30 @@ export const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isEditingUsername, setIsEditingUsername] = useState(false);
   const [usernameInput, setUsernameInput] = useState(user.username || "");
+  const [successMessage, setSuccessMessage] = useState<SuccessMessage>(null);
+
+  // Image preview state
+  const [pendingImage, setPendingImage] = useState<{
+    file: File;
+    previewUrl: string;
+  } | null>(null);
+
+  // Clear success message after 3 seconds
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => setSuccessMessage(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
+
+  // Cleanup preview URL on unmount
+  useEffect(() => {
+    return () => {
+      if (pendingImage?.previewUrl) {
+        URL.revokeObjectURL(pendingImage.previewUrl);
+      }
+    };
+  }, [pendingImage]);
 
   const uploadMutation = useMutation({
     mutationFn: (file: File) => {
@@ -26,6 +55,8 @@ export const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
     },
     onSuccess: (newUrl) => {
       onUserUpdate({ pfpUrl: newUrl });
+      setPendingImage(null);
+      setSuccessMessage({ type: "avatar", message: "Profile picture updated!" });
     },
   });
 
@@ -37,6 +68,7 @@ export const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
     onSuccess: () => {
       onUserUpdate({ username: usernameInput });
       setIsEditingUsername(false);
+      setSuccessMessage({ type: "username", message: "Username updated!" });
     },
   });
 
@@ -51,26 +83,50 @@ export const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
         alert("Please select a PNG or JPG image");
         return;
       }
-      uploadMutation.mutate(file);
+      // Create preview URL
+      const previewUrl = URL.createObjectURL(file);
+      setPendingImage({ file, previewUrl });
     }
     e.target.value = "";
   };
 
-  const handleUsernameSubmit = () => {
-    if (usernameInput.trim() && usernameInput !== user.username) {
-      usernameMutation.mutate(usernameInput.trim());
+  const handleConfirmUpload = () => {
+    if (pendingImage) {
+      uploadMutation.mutate(pendingImage.file);
+    }
+  };
+
+  const handleCancelUpload = () => {
+    if (pendingImage?.previewUrl) {
+      URL.revokeObjectURL(pendingImage.previewUrl);
+    }
+    setPendingImage(null);
+  };
+
+  const handleStartEditUsername = () => {
+    setUsernameInput(user.username || "");
+    setIsEditingUsername(true);
+  };
+
+  const handleSaveUsername = () => {
+    const trimmed = usernameInput.trim();
+    if (trimmed && trimmed !== user.username) {
+      usernameMutation.mutate(trimmed);
     } else {
       setIsEditingUsername(false);
-      setUsernameInput(user.username || "");
     }
+  };
+
+  const handleCancelUsername = () => {
+    setIsEditingUsername(false);
+    setUsernameInput(user.username || "");
   };
 
   const handleUsernameKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      handleUsernameSubmit();
+      handleSaveUsername();
     } else if (e.key === "Escape") {
-      setIsEditingUsername(false);
-      setUsernameInput(user.username || "");
+      handleCancelUsername();
     }
   };
 
@@ -89,61 +145,118 @@ export const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
         className="hidden"
       />
 
+      {/* Success message toast */}
+      {successMessage && (
+        <div className="profile-success-toast">
+          <CheckIcon />
+          <span>{successMessage.message}</span>
+        </div>
+      )}
+
       {/* Header section with avatar */}
       <div className="flex flex-col items-center mb-8">
-        <div className="relative group">
+        {/* Avatar with edit overlay */}
+        <div className="relative">
           <ProfileAvatar
-            imageUrl={user.pfpUrl}
+            imageUrl={pendingImage?.previewUrl || user.pfpUrl}
             username={user.username}
             email={user.email}
             size="lg"
           />
-          {/* Avatar upload overlay */}
-          <button
-            onClick={handleAvatarClick}
-            disabled={uploadMutation.isPending}
-            className="profile-avatar-overlay"
-            aria-label="Upload profile picture"
-          >
-            {uploadMutation.isPending ? (
+
+          {/* Show different overlay based on state */}
+          {!pendingImage && !uploadMutation.isPending && (
+            <button
+              onClick={handleAvatarClick}
+              className="profile-avatar-edit-btn"
+              aria-label="Change profile picture"
+            >
+              <PencilIconSmall />
+            </button>
+          )}
+
+          {uploadMutation.isPending && (
+            <div className="profile-avatar-overlay-loading">
               <LoadingSpinner className="w-6 h-6 text-white" />
-            ) : (
-              <CameraIcon />
-            )}
-          </button>
+            </div>
+          )}
         </div>
 
+        {/* Image upload confirmation */}
+        {pendingImage && !uploadMutation.isPending && (
+          <div className="profile-image-confirm">
+            <p className="font-raleway text-xs text-slate-500 mb-2">
+              Use this photo?
+            </p>
+            <div className="flex justify-center gap-1.5">
+              <button
+                onClick={handleConfirmUpload}
+                className="profile-edit-action-btn profile-edit-action-confirm"
+                aria-label="Confirm upload"
+              >
+                <CheckIconSmall />
+              </button>
+              <button
+                onClick={handleCancelUpload}
+                className="profile-edit-action-btn profile-edit-action-cancel"
+                aria-label="Cancel upload"
+              >
+                <CloseIconSmall />
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Username/Email and tier */}
-        <div className="mt-6 text-center">
+        <div className="mt-6 text-center w-full">
           {isEditingUsername ? (
-            <div className="flex items-center gap-2">
-              <span className="font-raleway text-2xl font-semibold text-white/60">
-                @
-              </span>
+            <div className="flex items-center justify-center gap-1">
+              <span className="font-raleway text-2xl font-semibold text-white/50">@</span>
               <input
                 type="text"
                 value={usernameInput}
                 onChange={(e) => setUsernameInput(e.target.value)}
-                onBlur={handleUsernameSubmit}
                 onKeyDown={handleUsernameKeyDown}
-                className="profile-username-input"
+                className="profile-username-input-inline"
                 autoFocus
                 placeholder="username"
+                disabled={usernameMutation.isPending}
               />
-              {usernameMutation.isPending && (
-                <LoadingSpinner className="w-5 h-5 text-leetgo-bright" />
+              {usernameMutation.isPending ? (
+                <LoadingSpinner className="w-4 h-4 text-slate-400 ml-1" />
+              ) : (
+                <div className="flex items-center gap-1 ml-1.5">
+                  <button
+                    onClick={handleSaveUsername}
+                    disabled={!usernameInput.trim()}
+                    className="profile-edit-action-btn profile-edit-action-confirm"
+                    aria-label="Save username"
+                  >
+                    <CheckIconSmall />
+                  </button>
+                  <button
+                    onClick={handleCancelUsername}
+                    className="profile-edit-action-btn profile-edit-action-cancel"
+                    aria-label="Cancel"
+                  >
+                    <CloseIconSmall />
+                  </button>
+                </div>
               )}
             </div>
           ) : (
-            <button
-              onClick={() => setIsEditingUsername(true)}
-              className="group flex items-center gap-2 hover:opacity-80 transition-opacity"
-            >
+            <div className="flex items-center justify-center gap-1.5">
               <h2 className="font-raleway text-2xl font-semibold text-white/95 tracking-tight">
                 {user.username ? `@${user.username}` : user.email}
               </h2>
-              <EditIcon className="w-4 h-4 text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-            </button>
+              <button
+                onClick={handleStartEditUsername}
+                className="profile-pencil-btn"
+                aria-label="Edit username"
+              >
+                <PencilIcon />
+              </button>
+            </div>
           )}
           <div className="mt-3">
             <ProfileTierBadge tier={user.paidTier} />
@@ -168,7 +281,7 @@ export const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
           label="Username"
           value={user.username}
           placeholder="Not set"
-          onEdit={() => setIsEditingUsername(true)}
+          onEdit={handleStartEditUsername}
         />
 
         <ProfileInfoRow
@@ -181,11 +294,12 @@ export const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
 
       {/* Error messages */}
       {(uploadMutation.isError || usernameMutation.isError) && (
-        <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-          <p className="font-raleway text-sm text-red-400">
+        <div className="profile-error-message">
+          <ErrorIcon />
+          <p>
             {uploadMutation.error?.message ||
               usernameMutation.error?.message ||
-              "An error occurred"}
+              "An error occurred. Please try again."}
           </p>
         </div>
       )}
@@ -209,7 +323,7 @@ const ProfileInfoRow: React.FC<ProfileInfoRowProps> = ({
   onEdit,
 }) => {
   return (
-    <div className="profile-info-row group">
+    <div className="profile-info-row">
       <div className="profile-info-icon">{icon}</div>
       <div className="flex-1 min-w-0">
         <p className="font-raleway text-xs uppercase tracking-widest text-slate-500 mb-1">
@@ -226,44 +340,111 @@ const ProfileInfoRow: React.FC<ProfileInfoRowProps> = ({
       {onEdit && (
         <button
           onClick={onEdit}
-          className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-slate-700/50 rounded"
+          className="profile-pencil-btn"
           aria-label={`Edit ${label}`}
         >
-          <EditIcon className="w-4 h-4 text-slate-400" />
+          <PencilIcon />
         </button>
       )}
     </div>
   );
 };
 
-const CameraIcon = () => (
+// Icons
+
+// Small pencil for avatar edit button
+const PencilIconSmall = () => (
   <svg
-    width="24"
-    height="24"
+    width="12"
+    height="12"
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    strokeWidth="1.5"
+    strokeWidth="2.5"
     strokeLinecap="round"
     strokeLinejoin="round"
   >
-    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-    <circle cx="12" cy="13" r="4" />
+    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
   </svg>
 );
 
-const EditIcon = ({ className = "" }: { className?: string }) => (
+// Small check for confirm actions
+const CheckIconSmall = () => (
   <svg
-    className={className}
+    width="11"
+    height="11"
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    strokeWidth="1.5"
+    strokeWidth="3"
     strokeLinecap="round"
     strokeLinejoin="round"
   >
-    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+    <polyline points="20 6 9 17 4 12" />
+  </svg>
+);
+
+// Small X for cancel actions
+const CloseIconSmall = () => (
+  <svg
+    width="11"
+    height="11"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="3"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M18 6 6 18" />
+    <path d="m6 6 12 12" />
+  </svg>
+);
+
+const CheckIcon = () => (
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <polyline points="20 6 9 17 4 12" />
+  </svg>
+);
+
+const ErrorIcon = () => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <circle cx="12" cy="12" r="10" />
+    <line x1="12" y1="8" x2="12" y2="12" />
+    <line x1="12" y1="16" x2="12.01" y2="16" />
+  </svg>
+);
+
+const PencilIcon = () => (
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
   </svg>
 );
 
@@ -335,7 +516,6 @@ const AuthIcon: React.FC<AuthIconProps> = ({ provider }) => {
     );
   }
 
-  // Standard/email auth
   return (
     <svg
       width="18"
