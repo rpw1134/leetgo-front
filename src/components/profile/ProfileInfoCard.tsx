@@ -1,32 +1,150 @@
+import { useRef, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import type { User } from "../../types/user";
 import { ProfileAvatar } from "./ProfileAvatar";
 import { ProfileTierBadge } from "./ProfileTierBadge";
+import { uploadProfilePicture, updateUsername } from "../../utils/api/users";
+import { LoadingSpinner } from "../SVGs/LoadingSpinner";
 
 interface ProfileInfoCardProps {
   user: User;
+  onUserUpdate: (updates: Partial<User>) => void;
 }
 
-export const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({ user }) => {
+export const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
+  user,
+  onUserUpdate,
+}) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isEditingUsername, setIsEditingUsername] = useState(false);
+  const [usernameInput, setUsernameInput] = useState(user.username || "");
+
+  const uploadMutation = useMutation({
+    mutationFn: (file: File) => {
+      if (!user.email) throw new Error("No email found");
+      return uploadProfilePicture(user.email, file);
+    },
+    onSuccess: (newUrl) => {
+      onUserUpdate({ pfpUrl: newUrl });
+    },
+  });
+
+  const usernameMutation = useMutation({
+    mutationFn: (newUsername: string) => {
+      if (!user.email) throw new Error("No email found");
+      return updateUsername(user.email, newUsername);
+    },
+    onSuccess: () => {
+      onUserUpdate({ username: usernameInput });
+      setIsEditingUsername(false);
+    },
+  });
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.match(/^image\/(png|jpeg|jpg)$/)) {
+        alert("Please select a PNG or JPG image");
+        return;
+      }
+      uploadMutation.mutate(file);
+    }
+    e.target.value = "";
+  };
+
+  const handleUsernameSubmit = () => {
+    if (usernameInput.trim() && usernameInput !== user.username) {
+      usernameMutation.mutate(usernameInput.trim());
+    } else {
+      setIsEditingUsername(false);
+      setUsernameInput(user.username || "");
+    }
+  };
+
+  const handleUsernameKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleUsernameSubmit();
+    } else if (e.key === "Escape") {
+      setIsEditingUsername(false);
+      setUsernameInput(user.username || "");
+    }
+  };
+
   return (
     <div className="profile-card">
       {/* Decorative corner accents */}
       <div className="profile-card-corner profile-card-corner-tl" />
       <div className="profile-card-corner profile-card-corner-br" />
 
+      {/* Hidden file input */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/png,image/jpeg,image/jpg"
+        onChange={handleFileChange}
+        className="hidden"
+      />
+
       {/* Header section with avatar */}
       <div className="flex flex-col items-center mb-8">
-        <ProfileAvatar
-          imageUrl={user.pfpUrl}
-          username={user.username}
-          email={user.email}
-          size="lg"
-        />
+        <div className="relative group">
+          <ProfileAvatar
+            imageUrl={user.pfpUrl}
+            username={user.username}
+            email={user.email}
+            size="lg"
+          />
+          {/* Avatar upload overlay */}
+          <button
+            onClick={handleAvatarClick}
+            disabled={uploadMutation.isPending}
+            className="profile-avatar-overlay"
+            aria-label="Upload profile picture"
+          >
+            {uploadMutation.isPending ? (
+              <LoadingSpinner className="w-6 h-6 text-white" />
+            ) : (
+              <CameraIcon />
+            )}
+          </button>
+        </div>
 
         {/* Username/Email and tier */}
         <div className="mt-6 text-center">
-          <h2 className="font-raleway text-2xl font-semibold text-white/95 tracking-tight">
-            {user.username ? `@${user.username}` : user.email}
-          </h2>
+          {isEditingUsername ? (
+            <div className="flex items-center gap-2">
+              <span className="font-raleway text-2xl font-semibold text-white/60">
+                @
+              </span>
+              <input
+                type="text"
+                value={usernameInput}
+                onChange={(e) => setUsernameInput(e.target.value)}
+                onBlur={handleUsernameSubmit}
+                onKeyDown={handleUsernameKeyDown}
+                className="profile-username-input"
+                autoFocus
+                placeholder="username"
+              />
+              {usernameMutation.isPending && (
+                <LoadingSpinner className="w-5 h-5 text-leetgo-bright" />
+              )}
+            </div>
+          ) : (
+            <button
+              onClick={() => setIsEditingUsername(true)}
+              className="group flex items-center gap-2 hover:opacity-80 transition-opacity"
+            >
+              <h2 className="font-raleway text-2xl font-semibold text-white/95 tracking-tight">
+                {user.username ? `@${user.username}` : user.email}
+              </h2>
+              <EditIcon className="w-4 h-4 text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </button>
+          )}
           <div className="mt-3">
             <ProfileTierBadge tier={user.paidTier} />
           </div>
@@ -50,6 +168,7 @@ export const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({ user }) => {
           label="Username"
           value={user.username}
           placeholder="Not set"
+          onEdit={() => setIsEditingUsername(true)}
         />
 
         <ProfileInfoRow
@@ -59,6 +178,17 @@ export const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({ user }) => {
           placeholder="Standard"
         />
       </div>
+
+      {/* Error messages */}
+      {(uploadMutation.isError || usernameMutation.isError) && (
+        <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+          <p className="font-raleway text-sm text-red-400">
+            {uploadMutation.error?.message ||
+              usernameMutation.error?.message ||
+              "An error occurred"}
+          </p>
+        </div>
+      )}
     </div>
   );
 };
@@ -68,6 +198,7 @@ interface ProfileInfoRowProps {
   label: string;
   value: string | null | undefined;
   placeholder: string;
+  onEdit?: () => void;
 }
 
 const ProfileInfoRow: React.FC<ProfileInfoRowProps> = ({
@@ -75,9 +206,10 @@ const ProfileInfoRow: React.FC<ProfileInfoRowProps> = ({
   label,
   value,
   placeholder,
+  onEdit,
 }) => {
   return (
-    <div className="profile-info-row">
+    <div className="profile-info-row group">
       <div className="profile-info-icon">{icon}</div>
       <div className="flex-1 min-w-0">
         <p className="font-raleway text-xs uppercase tracking-widest text-slate-500 mb-1">
@@ -91,9 +223,49 @@ const ProfileInfoRow: React.FC<ProfileInfoRowProps> = ({
           {value || placeholder}
         </p>
       </div>
+      {onEdit && (
+        <button
+          onClick={onEdit}
+          className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-slate-700/50 rounded"
+          aria-label={`Edit ${label}`}
+        >
+          <EditIcon className="w-4 h-4 text-slate-400" />
+        </button>
+      )}
     </div>
   );
 };
+
+const CameraIcon = () => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+    <circle cx="12" cy="13" r="4" />
+  </svg>
+);
+
+const EditIcon = ({ className = "" }: { className?: string }) => (
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+  </svg>
+);
 
 const EmailIcon = () => (
   <svg

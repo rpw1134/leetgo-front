@@ -57,4 +57,35 @@ async function fetchCurrentUser(): Promise<User> {
   return mapApiResponseToUser(res.data);
 }
 
-export { createUser, loginUser, loginUserWithOAuth, fetchCurrentUser };
+interface UploadProfilePictureResponse {
+  profile_picture_url: string;
+}
+
+async function uploadProfilePicture(
+  email: string,
+  file: File,
+): Promise<string> {
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const res = await axiosClient.post<UploadProfilePictureResponse>(
+    `/users/${email}/profile-picture`,
+    formData,
+    { headers: { "Content-Type": "multipart/form-data" } },
+  );
+
+  return res.data.profile_picture_url;
+}
+
+async function updateUsername(email: string, username: string): Promise<void> {
+  await axiosClient.put(`/users/${encodeURIComponent(email)}`, { username });
+}
+
+export {
+  createUser,
+  loginUser,
+  loginUserWithOAuth,
+  fetchCurrentUser,
+  uploadProfilePicture,
+  updateUsername,
+};

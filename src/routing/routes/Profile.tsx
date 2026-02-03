@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, Navigate } from "react-router-dom";
 import { ProfileInfoCard } from "../../components/profile/ProfileInfoCard";
@@ -6,9 +6,19 @@ import { GridOverlay } from "../../components/reusable/backgrounds/GridOverlay";
 import { LoadingSpinner } from "../../components/SVGs/LoadingSpinner";
 import useUserContext from "../../customHooks/useUserContext";
 import { fetchCurrentUser } from "../../utils/api/users";
+import type { User } from "../../types/user";
 
 export const Profile: React.FC = () => {
   const { user, setUser } = useUserContext();
+
+  const handleUserUpdate = useCallback(
+    (updates: Partial<User>) => {
+      if (user) {
+        setUser({ ...user, ...updates });
+      }
+    },
+    [user, setUser]
+  );
 
   const {
     data: fetchedUser,
@@ -101,7 +111,7 @@ export const Profile: React.FC = () => {
             </p>
           </div>
 
-          <ProfileInfoCard user={displayUser} />
+          <ProfileInfoCard user={displayUser} onUserUpdate={handleUserUpdate} />
         </div>
       </main>
 

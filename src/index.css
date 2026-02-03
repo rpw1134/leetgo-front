@@ -485,25 +485,14 @@ html {
 
 .profile-avatar-ring {
   position: absolute;
-  inset: -4px;
+  inset: -3px;
   border-radius: 50%;
-  background: conic-gradient(
-    from 180deg,
-    rgba(0, 235, 23, 0.4) 0deg,
-    rgba(32, 192, 48, 0.1) 120deg,
-    rgba(0, 235, 23, 0.4) 240deg,
-    rgba(32, 192, 48, 0.1) 360deg
+  background: linear-gradient(
+    135deg,
+    rgba(0, 235, 23, 0.3) 0%,
+    rgba(32, 192, 48, 0.1) 50%,
+    rgba(0, 235, 23, 0.2) 100%
   );
-  animation: avatarRingSpin 8s linear infinite;
-}
-
-@keyframes avatarRingSpin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 .profile-avatar-container {
@@ -626,4 +615,53 @@ html {
   border: 1px solid rgba(248, 113, 113, 0.2);
   border-radius: 12px;
   padding: 1.5rem;
+}
+
+/* Avatar upload overlay */
+.profile-avatar-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  cursor: pointer;
+  color: white;
+  border: none;
+}
+
+.group:hover .profile-avatar-overlay {
+  opacity: 1;
+}
+
+.profile-avatar-overlay:disabled {
+  cursor: wait;
+  opacity: 1;
+}
+
+/* Username inline edit input */
+.profile-username-input {
+  font-family: var(--font-raleway);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid rgba(0, 235, 23, 0.5);
+  outline: none;
+  padding: 0.125rem 0;
+  width: 150px;
+  transition: border-color 0.2s ease;
+}
+
+.profile-username-input:focus {
+  border-color: rgba(0, 235, 23, 0.8);
+}
+
+.profile-username-input::placeholder {
+  color: rgba(90, 101, 120, 0.6);
+  font-style: italic;
 }
