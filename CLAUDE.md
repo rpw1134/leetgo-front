@@ -43,3 +43,4 @@ This platform is educational and social, not competitive and intense.
 5. You will place all SVG components in the SVGs folder.
 6. You will use the animejs library for all complex animations. You can find documentation at https://animejs.com/documentation.
 7. All components will be responsive across mobile, tablet, laptoc, and desktop screen sizes.
+8. You will not define many custom CSS classes for tailwind. Tailwind exists to avoid this. Use tailwind.

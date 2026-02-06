@@ -808,3 +808,106 @@ html {
   flex-shrink: 0;
   margin-top: 1px;
 }
+
+/* ============================================
+   Sandbox Page Styles
+   ============================================ */
+
+/* Sandbox background — matches login-bg family, very subtle green hint */
+.sandbox-bg {
+  background:
+    radial-gradient(
+      ellipse at 50% 100%,
+      rgba(0, 235, 23, 0.025) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 20% 30%,
+      rgba(32, 192, 48, 0.015) 0%,
+      transparent 40%
+    ),
+    linear-gradient(180deg, #0c0f14 0%, #12161d 100%);
+}
+
+/* Config panel — soft slate surface, slightly raised */
+.sandbox-config-panel {
+  background: linear-gradient(
+    160deg,
+    rgba(26, 31, 42, 0.65) 0%,
+    rgba(18, 22, 29, 0.8) 100%
+  );
+  border: 1px solid rgba(90, 101, 120, 0.12);
+  backdrop-filter: blur(12px);
+  box-shadow:
+    0 8px 24px -8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.02);
+}
+
+/* Chat bar — animated glowing green border using conic gradient rotation */
+.sandbox-chat-glow {
+  position: relative;
+  background: transparent;
+}
+
+/* The rotating conic-gradient border effect */
+.sandbox-chat-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 1rem;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--glow-angle, 0deg),
+    transparent 0%,
+    rgba(0, 235, 23, 0.35) 10%,
+    rgba(32, 192, 48, 0.15) 20%,
+    transparent 30%,
+    transparent 100%
+  );
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  animation: glowRotate 4s linear infinite;
+  opacity: 0.7;
+  transition: opacity 0.4s ease;
+}
+
+/* Focused state — steady glow replaces the spinning trace */
+.sandbox-chat-glow--focused::before {
+  animation: none;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 235, 23, 0.25) 0%,
+    rgba(32, 192, 48, 0.15) 50%,
+    rgba(0, 235, 23, 0.25) 100%
+  );
+  opacity: 1;
+}
+
+/* Outer glow bloom when focused */
+.sandbox-chat-glow--focused {
+  box-shadow: 0 0 20px rgba(0, 235, 23, 0.06), 0 0 40px rgba(0, 235, 23, 0.03);
+}
+
+/* Inner surface of the chat bar */
+.sandbox-chat-inner {
+  background: linear-gradient(
+    165deg,
+    rgba(18, 22, 29, 0.95) 0%,
+    rgba(12, 15, 20, 0.98) 100%
+  );
+}
+
+/* The welcome heading gradient text */
+.sandbox-welcome-gradient {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.85) 0%,
+    rgba(255, 255, 255, 0.5) 60%,
+    rgba(0, 235, 23, 0.4) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

@@ -445,3 +445,22 @@
   animation: checkmarkDraw 0.4s ease-out forwards;
   animation-delay: 0.6s;
 }
+
+/* ============================================
+   Sandbox Glow Rotation
+   ============================================ */
+
+@property --glow-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes glowRotate {
+  from {
+    --glow-angle: 0deg;
+  }
+  to {
+    --glow-angle: 360deg;
+  }
+}
