@@ -2,23 +2,7 @@ import type {
   ProblemGenerationRequest,
   ProblemGenerationChunk,
 } from "../../types";
-import { API_URL, axiosClient } from "../constants";
-import axios from "axios";
-
-async function createNewProblem(creationRequest: ProblemGenerationRequest) {
-  try {
-    const res = await axiosClient.post("/problems", creationRequest, {
-      headers: { "Content-Type": "application/json" },
-    });
-    return res.data; // a stream
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      const errorMessage =
-        error.response.data?.detail || "Failed to login user";
-      throw new Error(errorMessage);
-    }
-  }
-}
+import { API_URL } from "../constants";
 
 export async function generateProblemStream(
   problemRequest: ProblemGenerationRequest,
@@ -31,7 +15,7 @@ export async function generateProblemStream(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Accept: "application/json", // Expecting a stream of JSON objects
+        Accept: "application/json",
       },
       body: JSON.stringify(problemRequest),
     });
@@ -42,6 +26,7 @@ export async function generateProblemStream(
 
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
+    let buffer = "";
 
     while (true) {
       const { done, value } = await reader.read();
@@ -50,14 +35,62 @@ export async function generateProblemStream(
         break;
       }
 
-      // Each chunk is a complete JSON object encoded as a string.
-      const chunkString = decoder.decode(value);
-      if (chunkString.trim()) {
+      buffer += decoder.decode(value, { stream: true });
+
+      // Extract complete JSON objects from the buffer
+      while (buffer.length > 0) {
+        const trimmed = buffer.trimStart();
+        if (!trimmed) break;
+
+        let depth = 0;
+        let inString = false;
+        let escape = false;
+        let endIndex = -1;
+
+        // Find the end of the first complete JSON object
+        for (let i = 0; i < trimmed.length; i++) {
+          const char = trimmed[i];
+
+          if (escape) {
+            escape = false;
+            continue;
+          }
+
+          if (char === "\\") {
+            escape = true;
+            continue;
+          }
+
+          if (char === '"') {
+            inString = !inString;
+            continue;
+          }
+
+          if (!inString) {
+            if (char === "{") depth++;
+            if (char === "}") {
+              depth--;
+              if (depth === 0) {
+                endIndex = i + 1;
+                break;
+              }
+            }
+          }
+        }
+
+        if (endIndex === -1) {
+          // Incomplete JSON object, wait for more data
+          break;
+        }
+
+        const jsonStr = trimmed.substring(0, endIndex);
+        buffer = trimmed.substring(endIndex);
+
         try {
-          const parsedChunk: ProblemGenerationChunk = JSON.parse(chunkString);
+          const parsedChunk: ProblemGenerationChunk = JSON.parse(jsonStr);
           onData(parsedChunk);
         } catch (e) {
-          console.error("Failed to parse stream chunk:", chunkString, e);
+          console.error("Failed to parse stream chunk:", jsonStr, e);
         }
       }
     }

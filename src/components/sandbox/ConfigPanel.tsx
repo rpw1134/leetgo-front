@@ -51,8 +51,8 @@ export const ConfigPanel = ({ config, onConfigChange }: ConfigPanelProps) => {
           label="Model"
           icon={<BrainIcon size={15} className="xl:w-[18px] xl:h-[18px]" />}
           options={MODEL_LABELS}
-          selected={config.model}
-          onSelect={(model) => onConfigChange({ model })}
+          selected={config.model_name}
+          onSelect={(model_name) => onConfigChange({ model_name })}
         />
 
         <div className="h-px" style={dividerStyle} />
@@ -82,8 +82,8 @@ export const ConfigPanel = ({ config, onConfigChange }: ConfigPanelProps) => {
           label="Problem Type"
           icon={<CategoryIcon size={15} className="xl:w-[18px] xl:h-[18px]" />}
           options={PROBLEM_TYPE_LABELS}
-          selected={config.problemType}
-          onSelect={(problemType) => onConfigChange({ problemType })}
+          selected={config.problem_type}
+          onSelect={(problem_type) => onConfigChange({ problem_type })}
         />
       </div>
     </div>

@@ -12,10 +12,10 @@ export type ProblemType = "arrays-strings" | "graphs";
 
 /** Grouped sandbox configuration state */
 export interface SandboxConfig {
-  model: AIModel;
+  model_name: AIModel;
   language: ProgrammingLanguage;
   difficulty: Difficulty;
-  problemType: ProblemType;
+  problem_type: ProblemType;
 }
 
 /** Label mappings for display purposes */
@@ -43,8 +43,8 @@ export const PROBLEM_TYPE_LABELS: Record<ProblemType, string> = {
 
 /** Default sandbox configuration */
 export const DEFAULT_SANDBOX_CONFIG: SandboxConfig = {
-  model: "gpt-4o",
+  model_name: "gpt-4o",
   language: "python",
   difficulty: "medium",
-  problemType: "arrays-strings",
+  problem_type: "arrays-strings",
 };

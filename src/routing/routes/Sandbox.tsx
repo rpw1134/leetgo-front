@@ -4,6 +4,7 @@ import { ConfigPanel } from "../../components/sandbox/ConfigPanel";
 import { ChatBar } from "../../components/sandbox/ChatBar";
 import { DEFAULT_SANDBOX_CONFIG } from "../../types/sandbox";
 import type { SandboxConfig } from "../../types/sandbox";
+import { generateProblemStream } from "../../utils/api/problems";
 
 /**
  * Sandbox page — clean, inset config surface + chat bar.
@@ -12,19 +13,31 @@ import type { SandboxConfig } from "../../types/sandbox";
 export default function Sandbox() {
   const [config, setConfig] = useState<SandboxConfig>(DEFAULT_SANDBOX_CONFIG);
 
-  const handleConfigChange = useCallback(
-    (updates: Partial<SandboxConfig>) => {
-      setConfig((prev) => ({ ...prev, ...updates }));
-    },
-    [],
-  );
+  const handleConfigChange = useCallback((updates: Partial<SandboxConfig>) => {
+    setConfig((prev) => ({ ...prev, ...updates }));
+  }, []);
 
-  const handleSubmit = useCallback(
-    (message: string) => {
-      console.log("Submit:", { message, config });
-    },
-    [config],
-  );
+  const handleSubmit = async (message: string) => {
+    const payload = {
+      creator_email: "ryanw1134@gmail.com",
+      user_prompt: message,
+      ...config,
+      model_provider: "openai",
+    };
+    console.log("Submitting problem generation request with payload:", payload);
+    await generateProblemStream(
+      payload,
+      (chunk) => {
+        console.log("Received chunk:", chunk);
+      },
+      () => {
+        console.log("Stream closed");
+      },
+      (error) => {
+        console.error("Stream error:", error);
+      },
+    );
+  };
 
   return (
     <div className="min-h-screen w-full bg-slate-950 overflow-hidden">
@@ -33,10 +46,19 @@ export default function Sandbox() {
       <div className="relative z-10 min-h-screen flex flex-col">
         {/* Header */}
         <header className="flex items-center justify-between px-6 sm:px-8 xl:px-12 py-5 xl:py-6">
-          <Link to="/" className="group flex items-center gap-0.5 opacity-40 hover:opacity-70 transition-opacity">
-            <span className="font-eb-garamond text-lg xl:text-xl text-white">&lt;</span>
-            <span className="font-eb-garamond text-lg xl:text-xl text-white/50">/</span>
-            <span className="font-eb-garamond text-lg xl:text-xl text-white">&gt;</span>
+          <Link
+            to="/"
+            className="group flex items-center gap-0.5 opacity-40 hover:opacity-70 transition-opacity"
+          >
+            <span className="font-eb-garamond text-lg xl:text-xl text-white">
+              &lt;
+            </span>
+            <span className="font-eb-garamond text-lg xl:text-xl text-white/50">
+              /
+            </span>
+            <span className="font-eb-garamond text-lg xl:text-xl text-white">
+              &gt;
+            </span>
           </Link>
 
           <Link
