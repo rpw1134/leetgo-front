@@ -105,7 +105,7 @@ export const HeroSection: React.FC = () => {
               </button>
               <button
                 onClick={scrollToHowItWorks}
-                className="splash-btn-secondary px-8 py-4"
+                className="font-raleway font-medium text-[0.95rem] tracking-[0.02em] text-white/90 bg-transparent border border-leetgo-bright/30 rounded-xl cursor-pointer transition-all duration-300 hover:bg-leetgo-bright/10 hover:border-leetgo-bright/50 hover:text-leetgo-bright px-8 py-4"
               >
                 How It Works
               </button>
@@ -167,7 +167,7 @@ export const HeroSection: React.FC = () => {
             </button>
             <button
               onClick={scrollToHowItWorks}
-              className="splash-btn-secondary px-6 py-3.5 w-full"
+              className="font-raleway font-medium text-[0.95rem] tracking-[0.02em] text-white/90 bg-transparent border border-leetgo-bright/30 rounded-xl cursor-pointer transition-all duration-300 hover:bg-leetgo-bright/10 hover:border-leetgo-bright/50 hover:text-leetgo-bright px-6 py-3.5 w-full"
             >
               How It Works
             </button>

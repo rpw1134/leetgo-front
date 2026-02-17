@@ -16,6 +16,15 @@ type SuccessMessage = {
   message: string;
 } | null;
 
+const profileCardStyle = {
+  background: "linear-gradient(165deg, rgba(26, 31, 42, 0.85) 0%, rgba(18, 22, 29, 0.95) 100%)",
+  boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.03)",
+};
+
+const dividerStyle = {
+  background: "linear-gradient(90deg, transparent, rgba(90, 101, 120, 0.3) 20%, rgba(0, 235, 23, 0.15) 50%, rgba(90, 101, 120, 0.3) 80%, transparent)",
+};
+
 export const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
   user,
   onUserUpdate,
@@ -83,7 +92,6 @@ export const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
         alert("Please select a PNG or JPG image");
         return;
       }
-      // Create preview URL
       const previewUrl = URL.createObjectURL(file);
       setPendingImage({ file, previewUrl });
     }
@@ -131,10 +139,17 @@ export const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
   };
 
   return (
-    <div className="profile-card">
+    <div
+      className="relative rounded-2xl p-10 border border-slate-500/15 backdrop-blur-[16px] overflow-hidden"
+      style={profileCardStyle}
+    >
       {/* Decorative corner accents */}
-      <div className="profile-card-corner profile-card-corner-tl" />
-      <div className="profile-card-corner profile-card-corner-br" />
+      <div
+        className="absolute top-0 left-0 w-[60px] h-[60px] pointer-events-none rounded-tl-2xl border-t border-l border-leetgo-bright/20"
+      />
+      <div
+        className="absolute bottom-0 right-0 w-[60px] h-[60px] pointer-events-none rounded-br-2xl border-b border-r border-leetgo-bright/20"
+      />
 
       {/* Hidden file input */}
       <input
@@ -168,7 +183,11 @@ export const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
           {!pendingImage && !uploadMutation.isPending && (
             <button
               onClick={handleAvatarClick}
-              className="profile-avatar-edit-btn"
+              className="absolute bottom-1.5 right-1.5 flex items-center justify-center w-[26px] h-[26px] p-0 rounded-md cursor-pointer transition-all duration-200 ease-[cubic-bezier(0.4,0,0.2,1)] text-white/70 border border-slate-500/50 hover:text-leetgo-bright hover:border-leetgo-bright/50 hover:scale-105"
+              style={{
+                background: "rgba(18, 22, 29, 0.95)",
+                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+              }}
               aria-label="Change profile picture"
             >
               <PencilIconSmall />
@@ -176,7 +195,7 @@ export const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
           )}
 
           {uploadMutation.isPending && (
-            <div className="profile-avatar-overlay-loading">
+            <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/70">
               <LoadingSpinner className="w-6 h-6 text-white" />
             </div>
           )}
@@ -184,25 +203,17 @@ export const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
 
         {/* Image upload confirmation */}
         {pendingImage && !uploadMutation.isPending && (
-          <div className="profile-image-confirm">
+          <div className="mt-3 text-center">
             <p className="font-raleway text-xs text-slate-500 mb-2">
               Use this photo?
             </p>
             <div className="flex justify-center gap-1.5">
-              <button
-                onClick={handleConfirmUpload}
-                className="profile-edit-action-btn profile-edit-action-confirm"
-                aria-label="Confirm upload"
-              >
+              <ActionButton variant="confirm" onClick={handleConfirmUpload} aria-label="Confirm upload">
                 <CheckIconSmall />
-              </button>
-              <button
-                onClick={handleCancelUpload}
-                className="profile-edit-action-btn profile-edit-action-cancel"
-                aria-label="Cancel upload"
-              >
+              </ActionButton>
+              <ActionButton variant="cancel" onClick={handleCancelUpload} aria-label="Cancel upload">
                 <CloseIconSmall />
-              </button>
+              </ActionButton>
             </div>
           </div>
         )}
@@ -217,7 +228,7 @@ export const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
                 value={usernameInput}
                 onChange={(e) => setUsernameInput(e.target.value)}
                 onKeyDown={handleUsernameKeyDown}
-                className="profile-username-input-inline"
+                className="font-raleway text-2xl font-semibold text-white/95 bg-transparent border-none border-b border-b-slate-500/40 outline-none px-1 pb-0.5 w-[140px] transition-[border-color] duration-200 focus:border-b-leetgo-bright/60 disabled:opacity-60 placeholder:text-slate-500/50 placeholder:italic placeholder:font-normal"
                 autoFocus
                 placeholder="username"
                 disabled={usernameMutation.isPending}
@@ -226,21 +237,12 @@ export const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
                 <LoadingSpinner className="w-4 h-4 text-slate-400 ml-1" />
               ) : (
                 <div className="flex items-center gap-1 ml-1.5">
-                  <button
-                    onClick={handleSaveUsername}
-                    disabled={!usernameInput.trim()}
-                    className="profile-edit-action-btn profile-edit-action-confirm"
-                    aria-label="Save username"
-                  >
+                  <ActionButton variant="confirm" onClick={handleSaveUsername} disabled={!usernameInput.trim()} aria-label="Save username">
                     <CheckIconSmall />
-                  </button>
-                  <button
-                    onClick={handleCancelUsername}
-                    className="profile-edit-action-btn profile-edit-action-cancel"
-                    aria-label="Cancel"
-                  >
+                  </ActionButton>
+                  <ActionButton variant="cancel" onClick={handleCancelUsername} aria-label="Cancel">
                     <CloseIconSmall />
-                  </button>
+                  </ActionButton>
                 </div>
               )}
             </div>
@@ -249,13 +251,7 @@ export const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
               <h2 className="font-raleway text-2xl font-semibold text-white/95 tracking-tight">
                 {user.username ? `@${user.username}` : user.email}
               </h2>
-              <button
-                onClick={handleStartEditUsername}
-                className="profile-pencil-btn"
-                aria-label="Edit username"
-              >
-                <PencilIcon />
-              </button>
+              <PencilButton onClick={handleStartEditUsername} aria-label="Edit username" />
             </div>
           )}
           <div className="mt-3">
@@ -265,7 +261,7 @@ export const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
       </div>
 
       {/* Divider */}
-      <div className="profile-divider" />
+      <div className="h-px" style={dividerStyle} />
 
       {/* Info rows */}
       <div className="space-y-4 mt-6">
@@ -294,7 +290,7 @@ export const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
 
       {/* Error messages */}
       {(uploadMutation.isError || usernameMutation.isError) && (
-        <div className="profile-error-message">
+        <div className="flex items-start gap-2 mt-4 py-3 px-4 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 font-raleway text-[0.85rem]">
           <ErrorIcon />
           <p>
             {uploadMutation.error?.message ||
@@ -306,6 +302,52 @@ export const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
     </div>
   );
 };
+
+// --- Reusable small components ---
+
+interface ActionButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant: "confirm" | "cancel";
+  children: React.ReactNode;
+}
+
+const ActionButton: React.FC<ActionButtonProps> = ({ variant, children, ...props }) => {
+  const isConfirm = variant === "confirm";
+  return (
+    <button
+      type="button"
+      className={`flex items-center justify-center w-5 h-5 p-0 rounded-[5px] cursor-pointer transition-all duration-150 ease-[cubic-bezier(0.4,0,0.2,1)] border border-slate-500/40 disabled:opacity-35 disabled:cursor-not-allowed disabled:shadow-none ${
+        isConfirm
+          ? "text-leetgo-bright hover:bg-leetgo-bright/20 hover:border-leetgo-bright/50 hover:scale-[1.08]"
+          : "text-red-400/90 hover:bg-red-400/15 hover:border-red-400/40 hover:scale-[1.08]"
+      }`}
+      style={{
+        background: "rgba(18, 22, 29, 0.9)",
+        boxShadow: "0 1px 4px rgba(0, 0, 0, 0.2)",
+      }}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
+
+interface PencilButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+
+const PencilButton: React.FC<PencilButtonProps> = (props) => (
+  <button
+    type="button"
+    className="flex items-center justify-center w-5 h-5 p-0 rounded-[5px] cursor-pointer transition-all duration-150 ease-[cubic-bezier(0.4,0,0.2,1)] text-white/50 border border-slate-500/35 hover:bg-leetgo-bright/15 hover:border-leetgo-bright/40 hover:text-leetgo-bright hover:scale-[1.08]"
+    style={{
+      background: "rgba(18, 22, 29, 0.8)",
+      boxShadow: "0 1px 3px rgba(0, 0, 0, 0.15)",
+    }}
+    {...props}
+  >
+    <PencilIcon />
+  </button>
+);
+
+// --- ProfileInfoRow ---
 
 interface ProfileInfoRowProps {
   icon: React.ReactNode;
@@ -323,8 +365,10 @@ const ProfileInfoRow: React.FC<ProfileInfoRowProps> = ({
   onEdit,
 }) => {
   return (
-    <div className="profile-info-row">
-      <div className="profile-info-icon">{icon}</div>
+    <div className="flex items-start gap-4 py-3 px-4 rounded-[10px] border border-slate-500/10 bg-slate-700/30 transition-all duration-[250ms] hover:bg-slate-700/50 hover:border-slate-500/20">
+      <div className="flex items-center justify-center w-9 h-9 rounded-lg shrink-0 mt-0.5 text-slate-500/80" style={{ background: "rgba(18, 22, 29, 0.6)" }}>
+        {icon}
+      </div>
       <div className="flex-1 min-w-0">
         <p className="font-raleway text-xs uppercase tracking-widest text-slate-500 mb-1">
           {label}
@@ -337,96 +381,40 @@ const ProfileInfoRow: React.FC<ProfileInfoRowProps> = ({
           {value || placeholder}
         </p>
       </div>
-      {onEdit && (
-        <button
-          onClick={onEdit}
-          className="profile-pencil-btn"
-          aria-label={`Edit ${label}`}
-        >
-          <PencilIcon />
-        </button>
-      )}
+      {onEdit && <PencilButton onClick={onEdit} aria-label={`Edit ${label}`} />}
     </div>
   );
 };
 
 // Icons
 
-// Small pencil for avatar edit button
 const PencilIconSmall = () => (
-  <svg
-    width="12"
-    height="12"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
   </svg>
 );
 
-// Small check for confirm actions
 const CheckIconSmall = () => (
-  <svg
-    width="11"
-    height="11"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="3"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
+  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="20 6 9 17 4 12" />
   </svg>
 );
 
-// Small X for cancel actions
 const CloseIconSmall = () => (
-  <svg
-    width="11"
-    height="11"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="3"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
+  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
     <path d="M18 6 6 18" />
     <path d="m6 6 12 12" />
   </svg>
 );
 
 const CheckIcon = () => (
-  <svg
-    width="14"
-    height="14"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="20 6 9 17 4 12" />
   </svg>
 );
 
 const ErrorIcon = () => (
-  <svg
-    width="16"
-    height="16"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-px">
     <circle cx="12" cy="12" r="10" />
     <line x1="12" y1="8" x2="12" y2="12" />
     <line x1="12" y1="16" x2="12.01" y2="16" />
@@ -434,47 +422,20 @@ const ErrorIcon = () => (
 );
 
 const PencilIcon = () => (
-  <svg
-    width="14"
-    height="14"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
   </svg>
 );
 
 const EmailIcon = () => (
-  <svg
-    width="18"
-    height="18"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <rect x="2" y="4" width="20" height="16" rx="2" />
     <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
   </svg>
 );
 
 const UserIcon = () => (
-  <svg
-    width="18"
-    height="18"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="8" r="5" />
     <path d="M20 21a8 8 0 0 0-16 0" />
   </svg>
@@ -488,22 +449,10 @@ const AuthIcon: React.FC<AuthIconProps> = ({ provider }) => {
   if (provider === "google") {
     return (
       <svg width="18" height="18" viewBox="0 0 24 24">
-        <path
-          d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-          fill="#4285F4"
-        />
-        <path
-          d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-          fill="#34A853"
-        />
-        <path
-          d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-          fill="#FBBC05"
-        />
-        <path
-          d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-          fill="#EA4335"
-        />
+        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
       </svg>
     );
   }
@@ -517,16 +466,7 @@ const AuthIcon: React.FC<AuthIconProps> = ({ provider }) => {
   }
 
   return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
       <path d="M7 11V7a5 5 0 0 1 10 0v4" />
     </svg>

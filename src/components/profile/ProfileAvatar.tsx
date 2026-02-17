@@ -28,17 +28,31 @@ export const ProfileAvatar: React.FC<ProfileAvatarProps> = ({
   };
 
   return (
-    <div className={`profile-avatar-wrapper ${sizeClasses[size]}`}>
-      <div className="profile-avatar-ring" />
-      <div className="profile-avatar-container">
+    <div className={`relative flex items-center justify-center ${sizeClasses[size]}`}>
+      <div
+        className="absolute inset-[-3px] rounded-full"
+        style={{
+          background:
+            "linear-gradient(135deg, rgba(0, 235, 23, 0.3) 0%, rgba(32, 192, 48, 0.1) 50%, rgba(0, 235, 23, 0.2) 100%)",
+        }}
+      />
+      <div
+        className="relative w-full h-full rounded-full overflow-hidden border-2 border-slate-500/20"
+        style={{ background: "linear-gradient(145deg, #1a1f2a 0%, #12161d 100%)" }}
+      >
         {imageUrl ? (
           <img
             src={imageUrl}
             alt={`${username || "User"}'s avatar`}
-            className="profile-avatar-image"
+            className="w-full h-full object-cover"
           />
         ) : (
-          <div className="profile-avatar-fallback">
+          <div
+            className="w-full h-full flex items-center justify-center text-white/60"
+            style={{
+              background: "linear-gradient(145deg, #252c3a 0%, #1a1f2a 100%)",
+            }}
+          >
             <span className="font-raleway font-semibold tracking-wide">
               {getInitials()}
             </span>

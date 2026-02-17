@@ -22,56 +22,65 @@ interface ConfigPanelProps {
   onConfigChange: (updates: Partial<SandboxConfig>) => void;
 }
 
-/** Difficulty -> variant mapping for colored pills */
 const DIFFICULTY_VARIANT: Record<Difficulty, "easy" | "medium" | "hard"> = {
   easy: "easy",
   medium: "medium",
   hard: "hard",
 };
 
-/**
- * Configuration panel displayed above the chat bar.
- * Lets users select AI model, language, difficulty, and problem type
- * before submitting a prompt.
- */
+const insetPanelStyle = {
+  background: "rgba(8, 10, 14, 0.7)",
+  border: "1px solid rgba(90, 101, 120, 0.07)",
+  boxShadow:
+    "inset 0 2px 6px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.02)",
+};
+
+const dividerStyle = {
+  background:
+    "linear-gradient(90deg, transparent, rgba(90, 101, 120, 0.1) 30%, rgba(90, 101, 120, 0.1) 70%, transparent)",
+};
+
 export const ConfigPanel = ({ config, onConfigChange }: ConfigPanelProps) => {
   return (
-    <div className="sandbox-config-panel rounded-xl p-4 sm:p-5 animate-fade-in">
-      {/* Panel header */}
-      <p className="text-slate-400 text-sm font-raleway font-medium mb-4 tracking-wide">
-        Configure your problem
-      </p>
-
-      {/* Options grid — 2x2 on desktop, stacked on mobile */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+    <div
+      className="rounded-xl px-5 py-5 sm:px-7 sm:py-6 xl:px-9 xl:py-8"
+      style={insetPanelStyle}
+    >
+      <div className="flex flex-col gap-5 xl:gap-6">
         <ConfigOption<AIModel>
           label="Model"
-          icon={<BrainIcon size={13} />}
+          icon={<BrainIcon size={15} className="xl:w-[18px] xl:h-[18px]" />}
           options={MODEL_LABELS}
           selected={config.model}
           onSelect={(model) => onConfigChange({ model })}
         />
 
+        <div className="h-px" style={dividerStyle} />
+
         <ConfigOption<ProgrammingLanguage>
           label="Language"
-          icon={<CodeIcon size={13} />}
+          icon={<CodeIcon size={15} className="xl:w-[18px] xl:h-[18px]" />}
           options={LANGUAGE_LABELS}
           selected={config.language}
           onSelect={(language) => onConfigChange({ language })}
         />
 
+        <div className="h-px" style={dividerStyle} />
+
         <ConfigOption<Difficulty>
           label="Difficulty"
-          icon={<GaugeIcon size={13} />}
+          icon={<GaugeIcon size={15} className="xl:w-[18px] xl:h-[18px]" />}
           options={DIFFICULTY_LABELS}
           selected={config.difficulty}
           onSelect={(difficulty) => onConfigChange({ difficulty })}
           variant={DIFFICULTY_VARIANT[config.difficulty]}
         />
 
+        <div className="h-px" style={dividerStyle} />
+
         <ConfigOption<ProblemType>
           label="Problem Type"
-          icon={<CategoryIcon size={13} />}
+          icon={<CategoryIcon size={15} className="xl:w-[18px] xl:h-[18px]" />}
           options={PROBLEM_TYPE_LABELS}
           selected={config.problemType}
           onSelect={(problemType) => onConfigChange({ problemType })}

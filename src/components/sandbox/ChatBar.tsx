@@ -50,7 +50,7 @@ export const ChatBar = ({ onSubmit }: ChatBarProps) => {
   const hasContent = message.trim().length > 0;
 
   return (
-    <div className="w-full max-w-3xl mx-auto px-4 sm:px-0">
+    <div className="w-full max-w-3xl xl:max-w-4xl mx-auto px-4 sm:px-0">
       {/* Outer glow wrapper — handles the animated border */}
       <div
         className={`
@@ -59,7 +59,7 @@ export const ChatBar = ({ onSubmit }: ChatBarProps) => {
         `}
       >
         {/* Inner container */}
-        <div className="sandbox-chat-inner relative flex items-end gap-2 rounded-2xl px-4 py-3">
+        <div className="sandbox-chat-inner relative flex items-center gap-2 rounded-2xl px-4 py-3 xl:px-5 xl:py-4">
           {/* Textarea */}
           <textarea
             ref={textareaRef}
@@ -72,7 +72,7 @@ export const ChatBar = ({ onSubmit }: ChatBarProps) => {
             rows={1}
             className="
               flex-1 bg-transparent resize-none outline-none
-              text-sm sm:text-base text-white/90 placeholder-slate-600
+              text-sm sm:text-base xl:text-lg text-white/90 placeholder-slate-600
               font-raleway leading-relaxed
               scrollbar-thin scrollbar-thumb-slate-700
             "
@@ -85,8 +85,8 @@ export const ChatBar = ({ onSubmit }: ChatBarProps) => {
             onClick={handleSubmit}
             disabled={!hasContent}
             className={`
-              flex items-center justify-center w-8 h-8 rounded-lg
-              transition-all duration-200 flex-shrink-0 mb-0.5
+              flex items-center justify-center w-8 h-8 xl:w-10 xl:h-10 rounded-full
+              transition-all duration-200 flex-shrink-0
               ${
                 hasContent
                   ? "bg-leetgo-primary text-slate-950 hover:bg-leetgo-bright cursor-pointer shadow-[0_0_12px_rgba(0,235,23,0.25)]"
@@ -100,7 +100,7 @@ export const ChatBar = ({ onSubmit }: ChatBarProps) => {
       </div>
 
       {/* Hint text */}
-      <p className="text-center text-slate-600 text-xs font-raleway mt-2.5 tracking-wide">
+      <p className="text-center text-slate-600 text-xs xl:text-sm font-raleway mt-2.5 tracking-wide">
         Press <span className="text-slate-500">Enter</span> to send, <span className="text-slate-500">Shift + Enter</span> for new line
       </p>
     </div>

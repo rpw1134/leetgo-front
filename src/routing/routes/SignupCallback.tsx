@@ -11,7 +11,13 @@ export default function SignupCallback() {
 
       {/* Main content */}
       <div className="relative z-10 min-h-screen flex flex-col justify-center items-center px-4">
-        <div className="signup-card p-8 md:p-12 rounded-2xl max-w-md w-full text-center animate-fade-in">
+        <div
+          className="p-8 md:p-12 rounded-2xl border border-leetgo-bright/15 backdrop-blur-[20px] max-w-md w-full text-center animate-fade-in"
+          style={{
+            background: "linear-gradient(145deg, rgba(43, 65, 45, 0.4) 0%, rgba(10, 31, 12, 0.6) 100%)",
+            boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 235, 23, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.05)",
+          }}
+        >
           {/* Success checkmark */}
           <div className="flex justify-center mb-6">
             <div className="w-20 h-20 rounded-full bg-leetgo-bright/10 border border-leetgo-bright/30 flex items-center justify-center">

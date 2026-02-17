@@ -4,26 +4,55 @@ interface ProfileTierBadgeProps {
   tier: PaidTier;
 }
 
+interface BadgeStyles {
+  className: string;
+  style?: React.CSSProperties;
+}
+
 export const ProfileTierBadge: React.FC<ProfileTierBadgeProps> = ({ tier }) => {
   const tierInfo = PAID_TIER_MAP[tier];
 
-  const getBadgeStyles = () => {
+  const getBadgeStyles = (): BadgeStyles => {
     switch (tier) {
       case 0:
-        return "tier-badge-free";
+        return {
+          className: "bg-slate-500/20 border border-slate-500/30 text-slate-500/90",
+        };
       case 1:
-        return "tier-badge-pro";
+        return {
+          className: "border border-blue-500/30 text-blue-400",
+          style: {
+            background:
+              "linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%)",
+            boxShadow: "0 0 20px rgba(59, 130, 246, 0.1)",
+          },
+        };
       case 2:
-        return "tier-badge-premium";
+        return {
+          className: "border border-amber-400/40 text-amber-400",
+          style: {
+            background:
+              "linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(245, 158, 11, 0.15) 100%)",
+            boxShadow:
+              "0 0 20px rgba(251, 191, 36, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
+          },
+        };
       default:
-        return "tier-badge-free";
+        return {
+          className: "bg-slate-500/20 border border-slate-500/30 text-slate-500/90",
+        };
     }
   };
 
+  const badgeStyles = getBadgeStyles();
+
   return (
-    <div className={`tier-badge ${getBadgeStyles()}`}>
+    <div
+      className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full font-raleway text-xs font-semibold tracking-wider uppercase ${badgeStyles.className}`}
+      style={badgeStyles.style}
+    >
       {tier === 2 && (
-        <span className="tier-badge-icon">
+        <span className="flex items-center">
           <svg
             width="14"
             height="14"
@@ -36,7 +65,7 @@ export const ProfileTierBadge: React.FC<ProfileTierBadgeProps> = ({ tier }) => {
         </span>
       )}
       {tier === 1 && (
-        <span className="tier-badge-icon">
+        <span className="flex items-center">
           <svg
             width="12"
             height="12"
@@ -48,7 +77,7 @@ export const ProfileTierBadge: React.FC<ProfileTierBadgeProps> = ({ tier }) => {
           </svg>
         </span>
       )}
-      <span className="tier-badge-label">{tierInfo.label}</span>
+      <span>{tierInfo.label}</span>
     </div>
   );
 };

@@ -74,7 +74,13 @@ export const Signup: React.FC = () => {
       <div className="relative z-10 min-h-screen flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="w-full max-w-md mx-auto">
           {/* Glass card container */}
-          <div className="signup-card p-8 md:p-10 rounded-2xl">
+          <div
+            className="p-8 md:p-10 rounded-2xl border border-leetgo-bright/15 backdrop-blur-[20px]"
+            style={{
+              background: "linear-gradient(145deg, rgba(43, 65, 45, 0.4) 0%, rgba(10, 31, 12, 0.6) 100%)",
+              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 235, 23, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.05)",
+            }}
+          >
             {state.isVerificationSent ? (
               <EmailVerificationSent email={state.email} />
             ) : (

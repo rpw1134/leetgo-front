@@ -7,7 +7,7 @@ interface FeatureCardProps {
   description: string;
   accentColor: string;
   index: number;
-  className?: string; // Added optional className prop
+  className?: string;
 }
 
 export const FeatureCard: React.FC<FeatureCardProps> = ({
@@ -16,7 +16,7 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
   description,
   accentColor,
   index,
-  className = "", // Default to empty string
+  className = "",
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -54,7 +54,7 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
   return (
     <div
       ref={cardRef}
-      className={`feature-card group relative p-6 rounded-2xl opacity-0 overflow-hidden min-h-70 ${className}`}
+      className={`group relative p-6 rounded-2xl opacity-0 overflow-hidden min-h-70 transition-all duration-[400ms] ease-[cubic-bezier(0.4,0,0.2,1)] hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.3),0_0_0_1px_rgba(0,235,23,0.2)] ${className}`}
       style={{
         background: `linear-gradient(145deg, rgba(43, 65, 45, 0.6) 0%, rgba(43, 51, 43, 0.8) 100%)`,
         border: "1px solid rgba(32, 192, 48, 0.1)",

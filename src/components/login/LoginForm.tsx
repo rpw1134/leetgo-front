@@ -72,7 +72,7 @@ export const LoginForm = ({
       </div>
 
       {/* Divider */}
-      <div className="login-divider font-raleway">or</div>
+      <div className="login-divider flex items-center gap-4 text-slate-500/80 text-[0.8rem] uppercase tracking-widest font-raleway">or</div>
 
       {/* Email/Password Form */}
       <form onSubmit={handleSubmit} className="space-y-5">

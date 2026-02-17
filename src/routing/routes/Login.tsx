@@ -72,7 +72,13 @@ export const Login: React.FC = () => {
           </div>
 
           {/* Login card */}
-          <div className="login-card p-8 rounded-xl">
+          <div
+            className="p-8 rounded-xl border border-slate-500/20 backdrop-blur-[12px]"
+            style={{
+              background: "linear-gradient(145deg, rgba(26, 31, 42, 0.8) 0%, rgba(18, 22, 29, 0.95) 100%)",
+              boxShadow: "0 20px 40px -12px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.03)",
+            }}
+          >
             <LoginForm
               onSubmit={handleLogin}
               onGoogleLogin={handleGoogleLogin}

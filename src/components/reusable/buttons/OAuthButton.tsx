@@ -54,7 +54,7 @@ export const OAuthButton = ({ provider, onClick, disabled }: OAuthButtonProps) =
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className="oauth-btn disabled:opacity-50 disabled:cursor-not-allowed"
+      className="flex items-center justify-center gap-3 w-full py-3.5 px-6 font-raleway font-medium text-[0.95rem] text-white/90 rounded-[10px] cursor-pointer transition-all duration-[250ms] ease-in-out border border-slate-500/30 bg-[rgba(37,44,58,0.6)] hover:bg-[rgba(37,44,58,0.9)] hover:-translate-y-px hover:border-slate-500/50 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
     >
       {icon}
       <span>{label}</span>

@@ -6,6 +6,27 @@ interface ProblemCardProps {
   isNew?: boolean;
 }
 
+const difficultyStyles = {
+  easy: {
+    style: { background: "linear-gradient(135deg, #20c030 0%, #00eb17 100%)" },
+    className: "text-leetgo-darkest",
+  },
+  medium: {
+    style: { background: "linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)" },
+    className: "text-leetgo-darkest",
+  },
+  hard: {
+    style: { background: "linear-gradient(135deg, #ef4444 0%, #f87171 100%)" },
+    className: "text-white",
+  },
+};
+
+const problemCardStyle = {
+  background: "linear-gradient(145deg, rgba(43, 65, 45, 0.7) 0%, rgba(10, 31, 12, 0.9) 100%)",
+  border: "1px solid rgba(0, 235, 23, 0.15)",
+  backdropFilter: "blur(10px)",
+};
+
 export const ProblemCard: React.FC<ProblemCardProps> = ({
   title,
   difficulty,
@@ -13,19 +34,17 @@ export const ProblemCard: React.FC<ProblemCardProps> = ({
   className = "",
   isNew = false,
 }) => {
-  const difficultyClass = {
-    easy: "difficulty-easy",
-    medium: "difficulty-medium",
-    hard: "difficulty-hard",
-  }[difficulty];
+  const badge = difficultyStyles[difficulty];
 
   return (
     <div
-      className={`problem-card problem-card-shimmer rounded-xl p-5 ${className}`}
+      className={`problem-card-shimmer rounded-xl p-5 ${className}`}
+      style={problemCardStyle}
     >
       <div className="flex items-start justify-between mb-3">
         <span
-          className={`${difficultyClass} text-xs font-semibold px-2.5 py-1 rounded-full uppercase tracking-wide`}
+          className={`${badge.className} text-xs font-semibold px-2.5 py-1 rounded-full uppercase tracking-wide`}
+          style={badge.style}
         >
           {difficulty}
         </span>
