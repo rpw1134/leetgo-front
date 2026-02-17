@@ -3,6 +3,7 @@ import { SendIcon } from "../SVGs/SendIcon";
 
 interface ChatBarProps {
   onSubmit: (message: string) => void;
+  disabled?: boolean;
 }
 
 /**
@@ -10,7 +11,7 @@ interface ChatBarProps {
  * Idle: a faint green pulse traces the border.
  * Focused: the border glows steadily (still faint/subtle).
  */
-export const ChatBar = ({ onSubmit }: ChatBarProps) => {
+export const ChatBar = ({ onSubmit, disabled = false }: ChatBarProps) => {
   const [message, setMessage] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -35,9 +36,8 @@ export const ChatBar = ({ onSubmit }: ChatBarProps) => {
 
   const handleSubmit = () => {
     const trimmed = message.trim();
-    if (!trimmed) return;
+    if (!trimmed || disabled) return;
 
-    // TODO: Add submit logic — send message with current sandbox config
     onSubmit(trimmed);
     setMessage("");
 
@@ -47,7 +47,7 @@ export const ChatBar = ({ onSubmit }: ChatBarProps) => {
     }
   };
 
-  const hasContent = message.trim().length > 0;
+  const hasContent = message.trim().length > 0 && !disabled;
 
   return (
     <div className="w-full max-w-3xl xl:max-w-4xl mx-auto px-4 sm:px-0">
@@ -68,7 +68,8 @@ export const ChatBar = ({ onSubmit }: ChatBarProps) => {
             onKeyDown={handleKeyDown}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            placeholder="Describe the kind of problem you want to practice..."
+            disabled={disabled}
+            placeholder={disabled ? "Generating problem..." : "Describe the kind of problem you want to practice..."}
             rows={1}
             className="
               flex-1 bg-transparent resize-none outline-none

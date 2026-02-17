@@ -348,3 +348,108 @@ html {
     transform: translateX(-50%) translateY(0);
   }
 }
+
+/* ============================================
+   Stream Window — Markdown & Cursor
+   ============================================ */
+
+.stream-cursor::after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  background: rgba(0, 235, 23, 0.7);
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: cursorBlink 0.8s steps(2) infinite;
+}
+
+@keyframes cursorBlink {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.stream-markdown h1,
+.stream-markdown h2,
+.stream-markdown h3 {
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 600;
+  margin-top: 1.25em;
+  margin-bottom: 0.5em;
+}
+
+.stream-markdown h1 { font-size: 1.4em; }
+.stream-markdown h2 { font-size: 1.2em; }
+.stream-markdown h3 { font-size: 1.05em; }
+
+.stream-markdown p {
+  margin-bottom: 0.75em;
+}
+
+.stream-markdown ul,
+.stream-markdown ol {
+  padding-left: 1.5em;
+  margin-bottom: 0.75em;
+}
+
+.stream-markdown li {
+  margin-bottom: 0.25em;
+}
+
+.stream-markdown code {
+  background: rgba(90, 101, 120, 0.15);
+  border: 1px solid rgba(90, 101, 120, 0.1);
+  border-radius: 4px;
+  padding: 0.15em 0.35em;
+  font-size: 0.9em;
+  color: rgba(0, 235, 23, 0.8);
+}
+
+.stream-markdown pre {
+  background: rgba(6, 8, 12, 0.8);
+  border: 1px solid rgba(90, 101, 120, 0.1);
+  border-radius: 8px;
+  padding: 1em;
+  margin-bottom: 0.75em;
+  overflow-x: auto;
+}
+
+.stream-markdown pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.85em;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.stream-markdown strong {
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 600;
+}
+
+.stream-markdown blockquote {
+  border-left: 3px solid rgba(0, 235, 23, 0.3);
+  padding-left: 1em;
+  margin-left: 0;
+  margin-bottom: 0.75em;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.stream-markdown table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 0.75em;
+}
+
+.stream-markdown th,
+.stream-markdown td {
+  border: 1px solid rgba(90, 101, 120, 0.15);
+  padding: 0.4em 0.75em;
+  text-align: left;
+}
+
+.stream-markdown th {
+  background: rgba(90, 101, 120, 0.08);
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+}

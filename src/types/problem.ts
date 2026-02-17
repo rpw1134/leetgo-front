@@ -8,13 +8,30 @@ export type ProblemGenerationRequest = {
   difficulty?: string;
 };
 
+export type TestCase = {
+  id: number;
+  test_case_input: string;
+  test_case_output: string;
+  problem_id: number;
+};
+
+export type ProblemConstraint = {
+  id: number;
+  constraint: string;
+  problem_id: number;
+};
+
 export type ProblemResponse = {
-  // This is a placeholder. You should update it with the actual response structure from your DTO.
-  id: string;
+  id: number;
   title: string;
   description: string;
-  solution: string;
-  language: string;
+  data: string | null;
+  creator_email: string;
+  creator_username: string;
+  creator_id: number;
+  generalized_function_signature: string;
+  test_cases: TestCase[];
+  problem_constraints: ProblemConstraint[];
 };
 
 export type ProblemGenerationChunk = {

@@ -1,40 +1,54 @@
 import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { ConfigPanel } from "../../components/sandbox/ConfigPanel";
+import { StreamWindow } from "../../components/sandbox/StreamWindow";
 import { ChatBar } from "../../components/sandbox/ChatBar";
 import { DEFAULT_SANDBOX_CONFIG } from "../../types/sandbox";
 import type { SandboxConfig } from "../../types/sandbox";
 import { generateProblemStream } from "../../utils/api/problems";
 
-/**
- * Sandbox page — clean, inset config surface + chat bar.
- * No decorative text. The controls are the experience.
- */
 export default function Sandbox() {
   const [config, setConfig] = useState<SandboxConfig>(DEFAULT_SANDBOX_CONFIG);
+  const [streamContent, setStreamContent] = useState("");
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [showStream, setShowStream] = useState(false);
+  const [streamComplete, setStreamComplete] = useState(false);
 
   const handleConfigChange = useCallback((updates: Partial<SandboxConfig>) => {
     setConfig((prev) => ({ ...prev, ...updates }));
   }, []);
 
   const handleSubmit = async (message: string) => {
+    setShowStream(true);
+    setStreamContent("");
+    setIsStreaming(true);
+
     const payload = {
       creator_email: "ryanw1134@gmail.com",
       user_prompt: message,
       ...config,
       model_provider: "openai",
     };
-    console.log("Submitting problem generation request with payload:", payload);
+
     await generateProblemStream(
       payload,
       (chunk) => {
-        console.log("Received chunk:", chunk);
+        if (chunk.is_final) {
+          console.log("Final chunk:", chunk);
+        }
+
+        if (chunk.content) {
+          setStreamContent((prev) => prev + chunk.content);
+        }
       },
       () => {
-        console.log("Stream closed");
+        setIsStreaming(false);
+        setStreamComplete(true);
       },
       (error) => {
         console.error("Stream error:", error);
+        setIsStreaming(false);
+        setStreamComplete(true);
       },
     );
   };
@@ -69,17 +83,30 @@ export default function Sandbox() {
           </Link>
         </header>
 
-        {/* Config panel — centered, this IS the page */}
-        <div className="flex-1 flex items-center justify-center px-4 sm:px-6 xl:px-8 pb-4">
-          <div className="w-full max-w-xl xl:max-w-2xl">
-            <ConfigPanel config={config} onConfigChange={handleConfigChange} />
+        {/* Content area — config or stream */}
+        {showStream ? (
+          <div className="flex-1 overflow-y-auto px-4 sm:px-6 xl:px-8 pb-8">
+            <div className="w-full max-w-3xl xl:max-w-4xl mx-auto">
+              <StreamWindow
+                content={streamContent}
+                isStreaming={isStreaming}
+              />
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="flex-1 flex items-center justify-center px-4 sm:px-6 xl:px-8 pb-4">
+            <div className="w-full max-w-xl xl:max-w-2xl">
+              <ConfigPanel config={config} onConfigChange={handleConfigChange} />
+            </div>
+          </div>
+        )}
 
-        {/* Chat bar */}
-        <div className="sticky bottom-0 pb-8 xl:pb-10 pt-2">
-          <ChatBar onSubmit={handleSubmit} />
-        </div>
+        {/* Chat bar — visible until stream completes */}
+        {!streamComplete && (
+          <div className="sticky bottom-0 pb-8 xl:pb-10 pt-2">
+            <ChatBar onSubmit={handleSubmit} disabled={isStreaming} />
+          </div>
+        )}
       </div>
     </div>
   );
