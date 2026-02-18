@@ -353,6 +353,15 @@ html {
    Stream Window — Markdown & Cursor
    ============================================ */
 
+/* ============================================
+   Workspace Panel (unified for all sandbox panels)
+   ============================================ */
+
+.workspace-panel {
+  background: #0d1117;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
 .stream-cursor::after {
   content: "";
   display: inline-block;

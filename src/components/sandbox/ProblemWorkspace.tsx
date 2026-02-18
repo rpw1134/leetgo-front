@@ -1,46 +1,44 @@
+import { ProblemDescription } from "./ProblemDescription";
 import { CodeEditor } from "./CodeEditor";
 import { TestCasesPanel } from "./TestCasesPanel";
 import type { ProblemResponse } from "../../types";
-import type { ProgrammingLanguage } from "../../types/sandbox";
+import type { ProgrammingLanguage, Difficulty } from "../../types/sandbox";
 
 interface ProblemWorkspaceProps {
   problem: ProblemResponse;
+  difficulty: Difficulty;
   language: ProgrammingLanguage;
   code: string;
   onCodeChange: (value: string) => void;
 }
 
-const panelStyle = {
-  background: "rgba(12, 15, 20, 0.85)",
-  border: "1px solid rgba(90, 101, 120, 0.1)",
-};
-
 export const ProblemWorkspace = ({
   problem,
+  difficulty,
   language,
   code,
   onCodeChange,
 }: ProblemWorkspaceProps) => {
   return (
-    <div className="h-full flex flex-col gap-3 min-h-0">
-      {/* Code editor — takes ~60% */}
-      <div
-        className="rounded-xl overflow-hidden flex-[3] min-h-0"
-        style={panelStyle}
-      >
-        <CodeEditor
-          language={language}
-          code={code}
-          onCodeChange={onCodeChange}
-        />
+    <div className="h-full grid grid-cols-1 lg:grid-cols-2 gap-2.5">
+      {/* Left: Problem description */}
+      <div className="workspace-panel rounded-lg overflow-hidden min-h-0">
+        <ProblemDescription problem={problem} difficulty={difficulty} />
       </div>
 
-      {/* Test cases — takes ~40% */}
-      <div
-        className="rounded-xl overflow-hidden flex-[2] min-h-0"
-        style={panelStyle}
-      >
-        <TestCasesPanel testCases={problem.test_cases} />
+      {/* Right: Editor + Test Cases */}
+      <div className="flex flex-col gap-2.5 min-h-0">
+        <div className="workspace-panel rounded-lg overflow-hidden flex-[3] min-h-0">
+          <CodeEditor
+            language={language}
+            code={code}
+            onCodeChange={onCodeChange}
+          />
+        </div>
+
+        <div className="workspace-panel rounded-lg overflow-hidden flex-[2] min-h-0">
+          <TestCasesPanel testCases={problem.test_cases} />
+        </div>
       </div>
     </div>
   );

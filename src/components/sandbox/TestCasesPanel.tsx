@@ -11,17 +11,17 @@ export const TestCasesPanel = ({ testCases }: TestCasesPanelProps) => {
 
   return (
     <div className="h-full flex flex-col overflow-hidden">
-      {/* Tabs */}
-      <div className="flex-shrink-0 flex items-center gap-1 px-4 pt-2.5 pb-0 border-b border-slate-800/60">
+      {/* Tab bar */}
+      <div className="flex-shrink-0 flex items-center gap-1 px-4 pt-2.5 border-b border-white/[0.06]">
         {testCases.map((_, idx) => (
           <button
             key={idx}
             onClick={() => setActiveTab(idx)}
             className={`
-              font-raleway text-xs font-medium px-3 py-1.5 rounded-t-md transition-colors
+              font-raleway text-base font-medium px-3.5 py-2 rounded-t transition-colors
               ${
                 idx === activeTab
-                  ? "text-leetgo-bright bg-slate-800/40 border-b-2 border-leetgo-bright"
+                  ? "text-leetgo-primary bg-white/[0.04]"
                   : "text-slate-500 hover:text-slate-400"
               }
             `}
@@ -31,9 +31,9 @@ export const TestCasesPanel = ({ testCases }: TestCasesPanelProps) => {
         ))}
       </div>
 
-      {/* Active test case content */}
+      {/* Content */}
       {activeCase && (
-        <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-thin scrollbar-thumb-slate-700">
+        <div className="flex-1 overflow-y-auto p-5 space-y-4 scrollbar-thin scrollbar-thumb-slate-700">
           <TestCaseField label="Input" value={activeCase.test_case_input} />
           <TestCaseField
             label="Expected Output"
@@ -52,11 +52,11 @@ interface TestCaseFieldProps {
 
 const TestCaseField = ({ label, value }: TestCaseFieldProps) => (
   <div>
-    <p className="font-raleway text-xs text-slate-500 font-medium mb-1.5">
+    <p className="font-raleway text-sm text-slate-500 font-semibold tracking-widest uppercase mb-2">
       {label}
     </p>
-    <div className="bg-slate-900/60 border border-slate-800/40 rounded-md px-3 py-2">
-      <code className="font-mono text-xs text-slate-300 whitespace-pre-wrap break-all">
+    <div className="bg-white/[0.02] border border-white/[0.05] rounded-md px-4 py-2.5">
+      <code className="font-mono text-base text-slate-300/80 whitespace-pre-wrap break-all">
         {value}
       </code>
     </div>

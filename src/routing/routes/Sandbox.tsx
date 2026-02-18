@@ -3,14 +3,11 @@ import { Link } from "react-router-dom";
 import { ConfigPanel } from "../../components/sandbox/ConfigPanel";
 import { StreamWindow } from "../../components/sandbox/StreamWindow";
 import { ChatBar } from "../../components/sandbox/ChatBar";
-import { ProblemDescription } from "../../components/sandbox/ProblemDescription";
 import { ProblemWorkspace } from "../../components/sandbox/ProblemWorkspace";
 import { DEFAULT_SANDBOX_CONFIG } from "../../types/sandbox";
 import type { SandboxConfig, SandboxPhase } from "../../types/sandbox";
 import type { ProblemResponse } from "../../types";
 import { generateProblemStream } from "../../utils/api/problems";
-
-const TRANSITION_DURATION = 700;
 
 export default function Sandbox() {
   const [config, setConfig] = useState<SandboxConfig>(DEFAULT_SANDBOX_CONFIG);
@@ -20,7 +17,6 @@ export default function Sandbox() {
   const [completeProblem, setCompleteProblem] =
     useState<ProblemResponse | null>(null);
   const [code, setCode] = useState("");
-  const [chatBarExiting, setChatBarExiting] = useState(false);
   const transitionTimer = useRef<ReturnType<typeof setTimeout>>();
 
   const handleConfigChange = useCallback(
@@ -33,16 +29,14 @@ export default function Sandbox() {
   const beginTransition = useCallback((problem: ProblemResponse) => {
     setCompleteProblem(problem);
     setCode(problem.generalized_function_signature ?? "");
-    setChatBarExiting(true);
 
-    // Start slide-left + slide-up via CSS class
+    // Phase 1: fade out the stream
     setPhase("transitioning");
 
-    // After the CSS transition finishes, swap to the full workspace
+    // Phase 2: after stream fades, show workspace
     transitionTimer.current = setTimeout(() => {
       setPhase("workspace");
-      setChatBarExiting(false);
-    }, TRANSITION_DURATION + 100);
+    }, 450);
   }, []);
 
   const handleSubmit = async (message: string) => {
@@ -75,8 +69,7 @@ export default function Sandbox() {
       () => {
         setIsStreaming(false);
         if (finalProblem) {
-          // Brief pause so the user sees the completed stream
-          setTimeout(() => beginTransition(finalProblem!), 600);
+          setTimeout(() => beginTransition(finalProblem!), 500);
         }
       },
       (error) => {
@@ -85,12 +78,6 @@ export default function Sandbox() {
       },
     );
   };
-
-  const isSplit = phase === "transitioning" || phase === "workspace";
-  const showChatBar =
-    (phase === "config" || phase === "streaming" || phase === "transitioning") &&
-    !chatBarExiting;
-  const showExitingChatBar = chatBarExiting;
 
   return (
     <div className="h-screen w-full bg-slate-950 overflow-hidden flex flex-col">
@@ -124,7 +111,7 @@ export default function Sandbox() {
 
         {/* Content area */}
         <div className="flex-1 min-h-0 px-4 sm:px-6 xl:px-8 pb-2">
-          {/* Config phase */}
+          {/* Config */}
           {phase === "config" && (
             <div className="h-full flex items-center justify-center pb-4">
               <div className="w-full max-w-xl xl:max-w-2xl">
@@ -136,56 +123,39 @@ export default function Sandbox() {
             </div>
           )}
 
-          {/* Streaming / Transitioning / Workspace — persistent flex layout */}
-          {phase !== "config" && (
-            <div className={`h-full flex gap-3 ${isSplit ? "sandbox-split" : ""}`}>
-              {/* Left: stream text slides left, then swaps to structured description */}
-              <div className="sandbox-left-panel h-full overflow-y-auto scrollbar-thin scrollbar-thumb-slate-700">
-                {phase === "workspace" && completeProblem ? (
-                  <div
-                    className="description-enter h-full rounded-xl overflow-hidden"
-                    style={{
-                      background: "rgba(12, 15, 20, 0.85)",
-                      border: "1px solid rgba(90, 101, 120, 0.1)",
-                    }}
-                  >
-                    <ProblemDescription
-                      problem={completeProblem}
-                      difficulty={config.difficulty}
-                    />
-                  </div>
-                ) : (
-                  <div className="w-full max-w-3xl xl:max-w-4xl">
-                    <StreamWindow
-                      content={streamContent}
-                      isStreaming={isStreaming}
-                    />
-                  </div>
-                )}
+          {/* Streaming — centered markdown */}
+          {(phase === "streaming" || phase === "transitioning") && (
+            <div
+              className={`h-full overflow-y-auto pb-4 ${
+                phase === "transitioning" ? "stream-fade-out" : ""
+              }`}
+            >
+              <div className="w-full max-w-3xl xl:max-w-4xl mx-auto">
+                <StreamWindow
+                  content={streamContent}
+                  isStreaming={isStreaming}
+                />
               </div>
+            </div>
+          )}
 
-              {/* Right: editor + test cases — grows from 0 and slides up */}
-              <div className="sandbox-right-panel h-full">
-                {completeProblem && (
-                  <ProblemWorkspace
-                    problem={completeProblem}
-                    language={config.language}
-                    code={code}
-                    onCodeChange={setCode}
-                  />
-                )}
-              </div>
+          {/* Workspace — description + editor + test cases */}
+          {phase === "workspace" && completeProblem && (
+            <div className="h-full workspace-enter">
+              <ProblemWorkspace
+                problem={completeProblem}
+                difficulty={config.difficulty}
+                language={config.language}
+                code={code}
+                onCodeChange={setCode}
+              />
             </div>
           )}
         </div>
 
-        {/* Chat bar — fades out during transition */}
-        {(showChatBar || showExitingChatBar) && (
-          <div
-            className={`flex-shrink-0 pb-8 xl:pb-10 pt-2 ${
-              showExitingChatBar ? "sandbox-chatbar-exit" : ""
-            }`}
-          >
+        {/* Chat bar — config & streaming only */}
+        {(phase === "config" || phase === "streaming") && (
+          <div className="flex-shrink-0 pb-8 xl:pb-10 pt-2">
             <ChatBar onSubmit={handleSubmit} disabled={isStreaming} />
           </div>
         )}
