@@ -48,3 +48,13 @@ export const DEFAULT_SANDBOX_CONFIG: SandboxConfig = {
   difficulty: "medium",
   problem_type: "arrays-strings",
 };
+
+/** Monaco editor language identifiers mapped from our language type */
+export const MONACO_LANGUAGE_MAP: Record<ProgrammingLanguage, string> = {
+  python: "python",
+  java: "java",
+  javascript: "javascript",
+};
+
+/** Sandbox page phases */
+export type SandboxPhase = "config" | "streaming" | "transitioning" | "workspace";
